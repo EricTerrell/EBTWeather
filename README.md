@@ -1,7 +1,46 @@
-# TODOs
+# EBT Weather for Windows and Linux
 
-In dark mode, on Linux, dialog boxes have no borders which can be confusing.
+EBT Weather delivers current and historical weather directly to your desktop computer:
 
-In dark mode, on Linux, border rectangles are not visible right after switching to dark mode. When the app is re-launched, they are visible.
+* Current Weather
+* Hourly Predictions
+* Daily Predictions 
+* Historical Weather Data
 
-Keyboard navigation is not working properly in the History tab. Adding a label to navigate to the calendar doesn't work. There seem to be major issues with the Calendar control.
+With EBT Weather, displaying historical weather data is as easy as accessing current weather. Just click on the "Historical" tab and select a date range.
+
+EBT Weather displays weather data from a list of your locations. Search for locations, or specify an exact location, down to a fraction of an arc second.
+
+EBT Weather is available for Windows and Linux. And of course, EBT Weather is open source!
+
+EBT Weather is built on the [`Avalonia`](https://avaloniaui.net/) framework. EBT Weather requires the [`.NET Desktop
+Runtime 10`](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
+
+# Copyright
+
+EBT Weather  
+&#169; Copyright 2026, [`Eric Bergman-Terrell`](https://www.ericbt.com)
+
+# Screenshots
+
+![`Current Weather`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-main.png "EBT Weather Screenshot, Current Weather")
+![`Hourly Predictions`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-hourly.png "EBT Weather Screenshot, Hourly Predictions")
+![`Daily Predictions`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-10-day.png "EBT Weather Screenshot, Daily Predictions")
+![`Historical Weather`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-historical.png "EBT Weather Screenshot, Historical Weather")
+![`Location Search`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-manage-locations-search.png "EBT Weather Screenshot, Location Search")
+![`Add Exact Location`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-historical.png "EBT Weather Screenshot, Add Exact Location")
+
+# Links
+
+* [`website`](https://www.ericbt.com/ebt_weather)
+* [`binaries`](https://www.ericbt.com/ebt_weather/download)
+* [`installation`](https://www.ericbt.com/ebt_weather/installation)
+* [`version history`](https://www.ericbt.com/ebt_weather/versionhistory)
+
+# License
+
+[`GPL3`](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+# Feedback
+
+Please submit your feedback to EBTWeather@EricBT.com.
