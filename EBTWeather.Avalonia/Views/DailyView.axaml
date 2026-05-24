@@ -1,0 +1,288 @@
+﻿<!--
+  EBT Weather
+  (C) Copyright 2026, Eric Bergman-Terrell
+  
+  This file is part of EBT Weather.
+
+  EBT Weather is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  EBT Weather is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- TODO: Find a way to allow CompileBindings=True and access the units suffixes -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:EBTWeather.Avalonia.ViewModels"
+             xmlns:converters="clr-namespace:EBTWeather.Avalonia.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:MainWindowViewModel"
+             x:CompileBindings="False"
+             x:Class="EBTWeather.Avalonia.Views.DailyView">
+    <!-- Had to disable compiled bindings in order to access the suffixes -->
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+    <UserControl.Resources>
+        <converters:ShortTimeConverter x:Key="ShortTimeConverter" />
+        <converters:AngleConverter x:Key="AngleConverter" />
+        <converters:BooleanToIntConverter x:Key="BooleanToIntConverter" />
+        <converters:BitMapAssetValueConverter x:Key="BitMapAssetValueConverter" />
+        <converters:ShortDateTimeConverter x:Key="ShortDateTimeConverter" />
+    </UserControl.Resources>
+    <ItemsControl ItemsSource="{Binding CurrentAndFutureWeather.TodayAndTomorrowWeatherInfo}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Grid
+                    Margin="0, 10, 10, 0"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                    ColumnDefinitions="Auto,Auto">
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock>
+                                    <Run Text="{Binding Title}" FontSize="24" FontWeight="Bold" />
+                                </TextBlock>
+                                <TextBlock 
+                                    VerticalAlignment="Center" 
+                                    FontSize="14" 
+                                    FontWeight="Normal"
+                                    Margin="5, 0, 0, 0"
+                                    IsVisible="{Binding IsToday}">
+                                    <Run Text="(as of " />
+                                    <Run Text="{Binding Path=DataContext.CurrentAndFutureWeather.AsOfTime, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ShortDateTimeConverter}}" />
+                                    <Run Text="local time)"/>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <Image
+                                        Source="{Binding WeatherIconUri, Converter={StaticResource BitMapAssetValueConverter}}"
+                                        Width="64"
+                                        Height="64"
+                                        ToolTip.Tip="temperature and predicted range" />
+                                </StackPanel>
+                                <!-- today -->
+                                <StackPanel
+                                    Orientation="Vertical"
+                                    IsVisible="{Binding IsToday}">
+                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
+                                        <TextBlock
+                                            Text="{Binding Temperature}" FontSize="32"
+                                            FontWeight="Bold" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            FontSize="32" FontWeight="Bold" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
+                                        <TextBlock Text="{Binding TemperatureMin}" FontSize="18"
+                                                   FontWeight="Bold" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            FontSize="18" FontWeight="Bold" />
+                                        <TextBlock Text=" - " FontSize="18" FontWeight="Bold"></TextBlock>
+                                        <TextBlock Text="{Binding TemperatureMax}" FontSize="18"
+                                                   FontWeight="Bold" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            FontSize="18" FontWeight="Bold" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <!-- tomorrow -->
+                                <StackPanel
+                                    Orientation="Vertical"
+                                    IsVisible="{Binding !IsToday}">
+                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
+                                        <TextBlock Text="{Binding TemperatureMin}" FontSize="32"
+                                                   FontWeight="Bold" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            FontSize="32" FontWeight="Bold" />
+                                        <TextBlock Text=" - " FontSize="32" FontWeight="Bold"></TextBlock>
+                                        <TextBlock Text="{Binding TemperatureMax}" FontSize="32"
+                                                   FontWeight="Bold" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            FontSize="32" FontWeight="Bold" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
+                        <TextBlock Text="{Binding WeatherDescription}" FontSize="28"
+                                   FontWeight="Bold" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Opacity="{Binding IsToday, Converter={StaticResource BooleanToIntConverter}}">
+                            <TextBlock Text="Feels Like " FontSize="16" />
+                            <TextBlock Text="{Binding ApparentTemperature}" FontSize="16"></TextBlock>
+                            <TextBlock
+                                Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                FontSize="16" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                        <Image Source="avares://EBTWeather/Assets/Icons/misc/water_drop_icon_vector.png"
+                               Width="36"
+                               Height="36"
+                               ToolTip.Tip="precipitation probability" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock VerticalAlignment="Center" Margin="10, 0, 0, 0"
+                                       Text="{Binding PrecipitationProbability}" FontSize="24"
+                                       FontWeight="Bold" />
+                            <TextBlock Text=" %" FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                        <Image
+                            Source="avares://EBTWeather/Assets/Icons/misc/farm_fresh_breeze.png"
+                            ToolTip.Tip="wind speed, direction, and gust speed" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                    Margin="10, 0, 0, 0">
+                            <TextBlock Text="{Binding WindSpeed}" FontSize="24"
+                                       FontWeight="Bold" />
+                            <TextBlock
+                                Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                FontSize="24" FontWeight="Bold" />
+                            <TextBlock Text=" " FontSize="24" FontWeight="Bold" />
+                            <TextBlock
+                                Text="{Binding WindDirection, Converter={StaticResource AngleConverter}}"
+                                FontSize="24" FontWeight="Bold" />
+                            <TextBlock Text=" (" FontSize="24" FontWeight="Bold" />
+                            <TextBlock Text="{Binding WindGusts}" FontSize="24"
+                                       FontWeight="Bold" />
+                            <TextBlock
+                                Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                FontSize="24" FontWeight="Bold" />
+                            <TextBlock Text=" gusts)" FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0">
+                        <Image
+                            Source="avares://EBTWeather/Assets/Icons/misc/eye_icon.png"
+                            Width="36"
+                            Height="36"
+                            ToolTip.Tip="visibility" />
+                        <StackPanel Orientation="Horizontal" Margin="10, 0, 0, 0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Visibility}" FontSize="24"
+                                       FontWeight="Bold" />
+                            <TextBlock
+                                Text="{Binding Path=DataContext.VisibilitySuffix, RelativeSource={RelativeSource AncestorType=Window}}"
+                                FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
+                        <Image
+                            Source="avares://EBTWeather/Assets/Icons/meteocons/sunrise.png"
+                            Width="36"
+                            Height="36"
+                            ToolTip.Tip="sunrise" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                    Margin="10, 0, 0, 0">
+                            <TextBlock
+                                Text="{Binding Sunrise, Converter={StaticResource ShortTimeConverter}}"
+                                FontSize="24"
+                                FontWeight="Bold" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
+                        <Image
+                            Source="avares://EBTWeather/Assets/Icons/meteocons/sunset.png"
+                            ToolTip.Tip="sunset" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                                    Margin="10, 0, 0, 0">
+                            <TextBlock
+                                Text="{Binding Sunset, Converter={StaticResource ShortTimeConverter}}"
+                                FontSize="24" FontWeight="Bold" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Grid Margin="0, 10, 0, 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Forecast Precipitation:" />
+                            <StackPanel Grid.Row="0" Grid.Column="1"
+                                        Classes="GridValue">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding PrecipitationSum}" />
+                                    <TextBlock
+                                        Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="UV Index:"
+                                       Opacity="{Binding IsToday, Converter={StaticResource BooleanToIntConverter}}" />
+                            <StackPanel Grid.Row="1" Grid.Column="1" Classes="GridValue">
+                                <TextBlock Text="{Binding UvIndex}"
+                                           Opacity="{Binding IsToday, Converter={StaticResource BooleanToIntConverter}}" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Forecast Max UV Index:" />
+                            <StackPanel Grid.Row="2" Grid.Column="1" Classes="GridValue">
+                                <TextBlock Text="{Binding UvIndexMax}" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Cloud Cover:" />
+                            <StackPanel
+                                Grid.Row="3" Grid.Column="1"
+                                Orientation="Horizontal"
+                                Classes="GridValue">
+                                <TextBlock Text="{Binding CloudCover}" />
+                                <TextBlock
+                                    Text="%" />
+                                <TextBlock Text=" " />
+                            </StackPanel>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Air Pressure:" />
+                            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal"
+                                        Classes="GridValue">
+                                <TextBlock Text="{Binding AirPressure}" />
+                                <TextBlock
+                                    Text="{Binding Path=DataContext.AirPressureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                <TextBlock Text=" " />
+                                <TextBlock Text="{Binding AirPressureChange}"></TextBlock>
+                            </StackPanel>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Humidity:" />
+                            <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal"
+                                        Classes="GridValue">
+                                <TextBlock Text="{Binding RelativeHumidity}" />
+                                <TextBlock Text=" %"></TextBlock>
+                            </StackPanel>
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Dew Point:" />
+                            <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal"
+                                        Classes="GridValue">
+                                <TextBlock Text="{Binding DewPoint}" />
+                                <TextBlock
+                                    Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

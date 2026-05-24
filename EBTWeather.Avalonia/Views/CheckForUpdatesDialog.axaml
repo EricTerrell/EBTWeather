@@ -1,0 +1,61 @@
+﻿<!--
+  EBT Weather
+  (C) Copyright 2026, Eric Bergman-Terrell
+  
+  This file is part of EBT Weather.
+
+  EBT Weather is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  EBT Weather is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:EBTWeather.Avalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="525" d:DesignHeight="200"
+        x:Class="EBTWeather.Avalonia.Views.CheckForUpdatesDialog"
+        x:DataType="vm:CheckForUpdatesDialogViewModel"
+        Title="Check for Updates"
+        Width="525"
+        MinWidth="525"
+        Height="200"
+        MinHeight="200"
+        CanMinimize="False"
+        WindowStartupLocation="CenterOwner">
+        <Grid 
+                RowDefinitions="Auto, Auto, Auto, *"
+                RowSpacing="10"
+                Margin="10"
+                >
+                <TextBlock 
+                        Grid.Row="0" 
+                        Text="{Binding Message}"
+                        TextWrapping="Wrap" />
+                <Button 
+                        Grid.Row="1" 
+                        Content="_Download Updates"
+                        IsVisible="{Binding EnableDownloadUpdates}"
+                        IsEnabled="{Binding EnableDownloadUpdates}"
+                        Command="{Binding DownloadUpdatesCommand}"
+                        CommandParameter="{Binding $parent[Window]}" />
+                <Button 
+                        Grid.Row="3" 
+                        Content="_Close"
+                        IsCancel="True"
+                        Name="CloseButton"
+                        VerticalAlignment="Bottom"
+                        Command="{Binding CloseCommand}"
+                        CommandParameter="{Binding $parent[Window]}" />
+        </Grid>
+</Window>

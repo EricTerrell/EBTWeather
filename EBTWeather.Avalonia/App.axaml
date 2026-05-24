@@ -1,0 +1,58 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="EBTWeather.Avalonia.App"
+             xmlns:local="using:EBTWeather.Avalonia"
+             RequestedThemeVariant="Default">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <!-- Define Brushes for Light Mode using x:Key="Light" -->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="BorderBrush" Color="Black"/>
+                </ResourceDictionary>
+                <!-- Define Brushes for Dark Mode using x:Key="Dark" -->
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="BorderBrush" Color="White"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+        
+        <!-- string resources -->
+        <x:String x:Key="MenuFileExit">Quit the application</x:String>
+        <x:String x:Key="MenuOptionsSettings">Configure EBT Weather based on your preferences</x:String>
+        <x:String x:Key="MenuLocationsManageLocations">Manage the list of locations for which weather is displayed</x:String>
+        <x:String x:Key="MenuHelpVisit">Visit www.EricBT.com</x:String>
+        <x:String x:Key="MenuHelpCheckForUpdates">Check for updates to this app on the EricBT.com website</x:String>
+        <x:String x:Key="MenuHelpSendFeedback">Send feedback about EBT Weather to the developer via e-mail</x:String>
+        <x:String x:Key="MenuHelpLicenseTerms">Display EBT Weather's license terms</x:String>
+        <x:String x:Key="MenuHelpAbout">Display information about EBT Weather</x:String>
+    </Application.Resources>
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+
+        <Style Selector="DataGridCell.FixedWidthFont">
+            <Setter Property="FontFamily" Value="Courier New" />
+        </Style>
+
+        <Style Selector="DataGridCell.AlignedRight">
+            <Setter Property="HorizontalContentAlignment" Value="Right" />
+        </Style>
+
+        <Style Selector="StackPanel.GridValue">
+            <Setter Property="Margin" Value="10, 0, 0, 0" />
+        </Style>
+        
+        <Style Selector="TextBlock.ErrorMessage">
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="Foreground" Value="Red" />
+        </Style>
+    </Application.Styles>
+</Application>

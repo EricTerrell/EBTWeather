@@ -1,0 +1,31 @@
+meta {
+  name: Historical
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://archive-api.open-meteo.com/v1/archive?latitude={{latitude}}&longitude={{longitude}}&elevation={{elevation}}&timezone={{timezone}}&start_date=2025-04-01&end_date=2025-04-07&daily=visibility_mean,relative_humidity_2m_mean,dew_point_2m_mean,pressure_msl_mean,wind_gusts_10m_mean,wind_speed_10m_mean,cloud_cover_mean,weather_code,uv_index_max,temperature_2m_max,temperature_2m_min,apparent_temperature_min,apparent_temperature_max,sunrise,sunset,daylight_duration,sunshine_duration,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant
+  body: none
+  auth: inherit
+}
+
+params:query {
+  latitude: {{latitude}}
+  longitude: {{longitude}}
+  elevation: {{elevation}}
+  timezone: {{timezone}}
+  start_date: 2025-04-01
+  end_date: 2025-04-07
+  daily: visibility_mean,relative_humidity_2m_mean,dew_point_2m_mean,pressure_msl_mean,wind_gusts_10m_mean,wind_speed_10m_mean,cloud_cover_mean,weather_code,uv_index_max,temperature_2m_max,temperature_2m_min,apparent_temperature_min,apparent_temperature_max,sunrise,sunset,daylight_duration,sunshine_duration,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant
+}
+
+vars:pre-request {
+  start_date: 2026-02-09
+  end_date: 2026-02-18
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

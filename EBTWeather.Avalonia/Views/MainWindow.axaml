@@ -1,0 +1,589 @@
+<!--
+  EBT Weather
+  (C) Copyright 2026, Eric Bergman-Terrell
+  
+  This file is part of EBT Weather.
+
+  EBT Weather is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  EBT Weather is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- TODO: Find a way to allow CompileBindings=True and access the units suffixes -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EBTWeather.Avalonia.ViewModels"
+        xmlns:views="using:EBTWeather.Avalonia.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:EBTWeather.Avalonia.Converters"
+        xmlns:misc="clr-namespace:EBTWeather.Avalonia.Misc"
+        mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="750"
+        x:Class="EBTWeather.Avalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        x:CompileBindings="False"
+        Icon="/Assets/app_icon.ico"
+        Title="EBT Weather"
+        Width="1400"
+        MinWidth="400"
+        Height="750"
+        MinHeight="250">
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Window.Resources>
+        <converters:ShortTimeHourConverter x:Key="ShortTimeHourConverter" />
+        <converters:ShortDateConverter x:Key="ShortDateConverter" />
+        <converters:AngleConverter x:Key="AngleConverter" />
+        <converters:DateToBackgroundColorConverter x:Key="DateToBackgroundColorConverter" />
+        <converters:ShortTimeConverter x:Key="ShortTimeConverter" />
+    </Window.Resources>
+    <Grid
+        RowDefinitions="Auto,Auto,*,Auto">
+        <Menu 
+            Grid.Row="0"
+            Name="MenuMain">
+            <misc:CustomMenuItem 
+                Header="_File"
+                Name="MenuFile">
+                <misc:CustomMenuItem
+                    Header="E_xit"
+                    Name="MenuFileExit"
+                    Command="{Binding FileExitCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+            </misc:CustomMenuItem>
+            <misc:CustomMenuItem 
+                Header="_Options"
+                Name="MenuOptions">
+                <misc:CustomMenuItem
+                    Header="_Settings..."
+                    Name="MenuOptionsSettings"
+                    Command="{Binding LaunchSettingsDialogCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+            </misc:CustomMenuItem>
+            <misc:CustomMenuItem 
+                Header="Loca_tions"
+                Name="MenuLocations">
+                <misc:CustomMenuItem
+                    Header="_Manage Locations..."
+                    Name="MenuLocationsManageLocations"
+                    Command="{Binding LaunchManageLocationsDialogCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+            </misc:CustomMenuItem>
+            <misc:CustomMenuItem 
+                Header="_Help"
+                Name="MenuHelp">
+                <misc:CustomMenuItem
+                    Header="_Visit EricBT.com"
+                    Name="MenuHelpVisit"
+                    Command="{Binding HelpVisitCommand}" />
+                <Separator />
+                <misc:CustomMenuItem
+                    Header="_Check for Updates..."
+                    Name="MenuHelpCheckForUpdates"
+                    Command="{Binding HelpCheckForUpdatesCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+                <Separator />
+                <misc:CustomMenuItem
+                    Header="_Send Feedback about EBT Weather"
+                    Name="MenuHelpSendFeedback"
+                    Command="{Binding HelpFeedbackCommand}" />
+                <Separator />
+                <misc:CustomMenuItem
+                    Header="_License Terms..."
+                    Name="MenuHelpLicenseTerms"
+                    Command="{Binding LaunchLicenseTermsDialogCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+                <Separator />
+                <misc:CustomMenuItem
+                    Header="_About..."
+                    Name="MenuHelpAbout"
+                    Command="{Binding LaunchAboutDialogCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+            </misc:CustomMenuItem>
+        </Menu>
+        <Border
+            Grid.Row="1"
+            VerticalAlignment="Top"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            Margin="10">
+            <Grid
+                RowDefinitions="Auto"
+                ColumnDefinitions="Auto, *, Auto"
+                ColumnSpacing="10"
+                Margin="10">
+                <Label
+                    Grid.Column="0"
+                    Content="_Location:"
+                    Target="{Binding ElementName=LocationsComboBox}"
+                    Margin="0, 0, 5, 0"
+                    VerticalAlignment="Center" />
+                <ComboBox
+                    Grid.Column="1"
+                    Name="LocationsComboBox"
+                    ItemsSource="{Binding LocationData}"
+                    SelectedIndex="{Binding CurrentLocationIndex, Mode=TwoWay}"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Stretch"
+                    HorizontalAlignment="Stretch" />
+                <Button
+                    Grid.Column="2"
+                    Content="_Manage..."
+                    VerticalAlignment="Center"
+                    Margin="5, 0, 0, 0"
+                    Command="{Binding LaunchManageLocationsDialogCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+            </Grid>
+        </Border>
+        <TabControl
+            Grid.Row="2"
+            Name="TabControl"
+            IsTabStop="True"
+            Focusable="True">
+            <TabItem Header="_Current">
+                <views:DailyView />
+            </TabItem>
+            <TabItem Header="Ho_urly">
+                <DataGrid
+                    ItemsSource="{Binding CurrentAndFutureWeather.HourlyPredictedWeatherInfoTodayAndTomorrow}"
+                    IsReadOnly="True"
+                    GridLinesVisibility="All"
+                    BorderThickness="1"
+                    BorderBrush="Gray"
+                    VerticalAlignment="Stretch"
+                    CanUserResizeColumns="True"
+                    Margin="0, 10, 0, 10">
+                    <DataGrid.Styles>
+                        <Style Selector="DataGridRow">
+                            <Setter Property="Background"
+                                    Value="{Binding DateTime, Converter={StaticResource DateToBackgroundColorConverter}}" />
+                        </Style>
+                    </DataGrid.Styles>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Time">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                        <TextBlock>
+                                            <Run
+                                                Text="{Binding DateTime, Converter={StaticResource ShortDateConverter}}" />
+                                            <Run Text=" " />
+                                            <Run
+                                                Text="{Binding DateTime, Converter={StaticResource ShortTimeHourConverter}}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Temp">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Temperature}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Feels Like">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ApparentTemperature}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Conditions" Binding="{Binding WeatherDescription}" />
+                        <DataGridTemplateColumn Header="Precip">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding PrecipitationProbability}" />
+                                        <TextBlock Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Amount">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Precipitation}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Cloud Cover">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CloudCover}" />
+                                        <TextBlock Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Visibility">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Visibility}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.VisibilitySuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Humidity">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding RelativeHumidity}" />
+                                        <TextBlock Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Dew Point">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DewPoint}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Wind">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding WindSpeed}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBlock Text=" " />
+                                        <TextBlock
+                                            Text="{Binding Path=WindDirection, Converter={StaticResource AngleConverter}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Gusts">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding WindGusts}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Pressure">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding AirPressure}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.AirPressureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="10 _Day">
+                <DataGrid
+                    ItemsSource="{Binding CurrentAndFutureWeather.DailyPredictedWeatherInfo}"
+                    IsReadOnly="True"
+                    GridLinesVisibility="All"
+                    BorderThickness="1"
+                    BorderBrush="Gray"
+                    VerticalAlignment="Stretch"
+                    CanUserResizeColumns="True"
+                    Margin="0, 10, 0, 10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Header="Date"
+                            Binding="{Binding Date, Converter={StaticResource ShortDateConverter}}" />
+                        <DataGridTemplateColumn Header="Temp">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding TemperatureMin}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBlock Text=" / " />
+                                        <TextBlock Text="{Binding TemperatureMax}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Conditions" Binding="{Binding WeatherDescription}" />
+                        <DataGridTemplateColumn Header="Precip">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding PrecipitationProbabilityMax}" />
+                                        <TextBlock Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Amount">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding PrecipitationSum}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Cloud Cover">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CloudCoverMean}" />
+                                        <TextBlock Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Max Wind Speed">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding WindSpeedMax}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        <TextBlock Text=" " />
+                                        <TextBlock
+                                            Text="{Binding Path=WindDirectionDominant, Converter={StaticResource AngleConverter}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Max Gusts">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding WindGustsMax}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Sunrise, Sunset">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock
+                                            Text="{Binding Sunrise, Converter={StaticResource ShortTimeConverter}}" />
+                                        <TextBlock Text=" / " />
+                                        <TextBlock
+                                            Text="{Binding Sunset, Converter={StaticResource ShortTimeConverter}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Max UV" Binding="{Binding UvIndexMax}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="H_istorical">
+                <Grid
+                    RowDefinitions="*"
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="10">
+                    <StackPanel
+                        Grid.Column="0"
+                        Orientation="Vertical">
+                        <Calendar
+                            Name="HistoricalDatesCalendar"
+                            Focusable="True"
+                            IsTabStop="True"
+                            SelectionMode="SingleRange"
+                            DisplayDateStart="{Binding HistoricalMinDate}"
+                            DisplayDateEnd="{Binding HistoricalMaxDate}"
+                            SelectedDatesChanged="Calendar_OnSelectedDatesChanged"
+                            VerticalAlignment="Top" />
+                        <StackPanel
+                            Orientation="Vertical"
+                            IsVisible="{Binding HistoricalWeather, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Margin="0, 10, 0, 0">
+                            <Border 
+                                BorderThickness="1" 
+                                BorderBrush="{StaticResource BorderBrush}">
+                                <Grid
+                                    RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
+                                    ColumnDefinitions="Auto,Auto"
+                                    RowSpacing="10"
+                                    ColumnSpacing="10"
+                                    Margin="10">
+                                    <TextBlock
+                                        Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                        Margin="0, 0, 0, 10">
+                                        <Run Text="{Binding HistoricalSelectedMinDate}"></Run>
+                                        <Run Text="-"></Run>
+                                        <Run Text="{Binding HistoricalSelectedMaxDate}"></Run>
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Total Precipitation:" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1">
+                                        <Run Text="{Binding HistoricalWeather.TotalPrecipitation}" />
+                                        <Run Text="{Binding PrecipitationSuffix}" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Min Temperature:" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1">
+                                        <Run Text="{Binding HistoricalWeather.MinTemperature}" />
+                                        <Run Text="{Binding TemperatureSuffix}" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Max Temperature:" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1">
+                                        <Run Text="{Binding HistoricalWeather.MaxTemperature}" />
+                                        <Run Text="{Binding TemperatureSuffix}" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Max Wind Speed:" />
+                                    <TextBlock Grid.Row="4" Grid.Column="1">
+                                        <Run Text="{Binding HistoricalWeather.MaxWindSpeed}" />
+                                        <Run Text="{Binding SpeedSuffix}" />
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Max Wind Gusts:" />
+                                    <TextBlock Grid.Row="5" Grid.Column="1">
+                                        <Run Text="{Binding HistoricalWeather.MaxWindGusts}" />
+                                        <Run Text="{Binding SpeedSuffix}" />
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                    <DataGrid
+                        Grid.Column="1"
+                        ItemsSource="{Binding HistoricalWeather.DailyWeatherInfo}"
+                        IsReadOnly="True"
+                        GridLinesVisibility="All"
+                        BorderThickness="1"
+                        BorderBrush="Gray"
+                        VerticalAlignment="Stretch"
+                        CanUserResizeColumns="True"
+                        Margin="0, 10, 0, 10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Header="Date"
+                                Binding="{Binding Date}" />
+                            <DataGridTemplateColumn Header="Temp">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding TemperatureMin}" />
+                                            <TextBlock
+                                                Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                            <TextBlock Text=" / " />
+                                            <TextBlock Text="{Binding TemperatureMax}" />
+                                            <TextBlock
+                                                Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Conditions" Binding="{Binding WeatherDescription}" />
+                            <DataGridTemplateColumn Header="Precip">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding PrecipitationSum}" />
+                                            <TextBlock
+                                                Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Cloud Cover">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding CloudCoverMean}" />
+                                            <TextBlock Text=" %" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Max Wind Speed">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding WindSpeedMax}" />
+                                            <TextBlock
+                                                Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                            <TextBlock Text=" " />
+                                            <TextBlock
+                                                Text="{Binding WindDirectionDominant, Converter={StaticResource AngleConverter}}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Max Gusts">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding WindGustsMax}" />
+                                            <TextBlock
+                                                Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Sunrise, Sunset">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock
+                                                Text="{Binding Sunrise, Converter={StaticResource ShortTimeConverter}}" />
+                                            <TextBlock Text=" / " />
+                                            <TextBlock
+                                                Text="{Binding Sunset, Converter={StaticResource ShortTimeConverter}}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <StackPanel
+            Grid.Row="3"
+            VerticalAlignment="Bottom"
+            Background="DarkSlateGray"
+            Margin="-10, 0, -10, 0">
+            <TextBlock
+                Name="Status"
+                Margin="15, 2, 15, 2"
+                Text="{Binding StatusMessage}"
+                Foreground="White" />
+        </StackPanel>
+    </Grid>
+</Window>

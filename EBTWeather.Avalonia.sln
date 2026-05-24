@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBTWeather.Avalonia", "EBTWeather.Avalonia\EBTWeather.Avalonia.csproj", "{2361ACD8-38AF-4021-A276-C6231AED86C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{78F19F04-3A81-4B91-8CEE-FBB9E8E384E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2361ACD8-38AF-4021-A276-C6231AED86C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2361ACD8-38AF-4021-A276-C6231AED86C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2361ACD8-38AF-4021-A276-C6231AED86C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2361ACD8-38AF-4021-A276-C6231AED86C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78F19F04-3A81-4B91-8CEE-FBB9E8E384E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78F19F04-3A81-4B91-8CEE-FBB9E8E384E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78F19F04-3A81-4B91-8CEE-FBB9E8E384E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78F19F04-3A81-4B91-8CEE-FBB9E8E384E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

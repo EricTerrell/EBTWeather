@@ -1,0 +1,97 @@
+﻿<!--
+  EBT Weather
+  (C) Copyright 2026, Eric Bergman-Terrell
+  
+  This file is part of EBT Weather.
+
+  EBT Weather is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  EBT Weather is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:EBTWeather.Avalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="225"
+        x:Class="EBTWeather.Avalonia.Views.SettingsDialog"
+        Title="Settings"
+        x:DataType="viewModels:SettingsDialogViewModel"
+        WindowStartupLocation="CenterOwner"
+        Width="300"
+        MinWidth="300"
+        Height="225"
+        MinHeight="225"
+        CanResize="True"
+        CanMinimize="False">
+
+    <Design.DataContext>
+        <viewModels:SettingsDialogViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="10" RowDefinitions="*,Auto" ColumnDefinitions="*">
+        <Grid 
+            Grid.Row="0" 
+            RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto"
+            RowSpacing="10">
+            <Label 
+                Grid.Row="0" Grid.Column="0"
+                Content="Screen Mode:"
+                Target="{Binding ElementName=ScreenModeComboBox}"
+                VerticalAlignment="Center" />
+            <ComboBox
+                Name="ScreenModeComboBox"
+                Grid.Row="0" Grid.Column="1"
+                VerticalAlignment="Center"
+                Margin="5, 0, 0, 0"
+                ItemsSource="{Binding AllScreenModes}"
+                SelectedItem="{Binding ScreenMode}" 
+            />
+            <Label 
+                Grid.Row="1" Grid.Column="0"
+                Content="_Units:"
+                Target="{Binding ElementName=UnitsComboBox}"
+                VerticalAlignment="Center" />
+            <ComboBox
+                Name="UnitsComboBox"
+                Grid.Row="1" Grid.Column="1"
+                VerticalAlignment="Center"
+                Margin="5, 0, 0, 0"
+                ItemsSource="{Binding AllUnits}"
+                SelectedItem="{Binding Units}" 
+            />
+            <CheckBox 
+                Grid.Row="2" 
+                Grid.Column="0" 
+                Grid.ColumnSpan="2"
+                Content="C_heck for updates once a week"
+                IsChecked="{Binding CheckForUpdates}" />
+        </Grid>
+        <StackPanel Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button
+                    Content="_OK"
+                    DockPanel.Dock="Bottom"
+                    Command="{Binding OkCommand}"
+                    CommandParameter="{Binding $parent[Window]}"
+                    Margin="0, 0, 10, 0"/>
+                <Button
+                    Content="_Cancel"
+                    IsCancel="True"
+                    DockPanel.Dock="Bottom"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding $parent[Window]}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

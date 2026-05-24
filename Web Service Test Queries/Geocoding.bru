@@ -1,0 +1,24 @@
+meta {
+  name: Geocoding
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://geocoding-api.open-meteo.com/v1/search?name={{city}}&count={{GeoLocationResults}}&language=en&format=json&countryCode={{country_code}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: {{city}}
+  count: {{GeoLocationResults}}
+  language: en
+  format: json
+  countryCode: {{country_code}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

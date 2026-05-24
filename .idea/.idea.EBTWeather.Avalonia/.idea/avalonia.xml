@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="EBTWeather.Avalonia/App.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/SettingsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/About.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/AboutDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/CheckForUpdatesDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/DailyView.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/LicenseTermsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/MainWindow.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/ManageLocationsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/SettingsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/UpdateIsAvailableDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,85 @@
+<!--
+  EBT Weather
+  (C) Copyright 2026, Eric Bergman-Terrell
+  
+  This file is part of EBT Weather.
+
+  EBT Weather is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  EBT Weather is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:EBTWeather.Avalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        x:Class="EBTWeather.Avalonia.Views.LicenseTermsDialog"
+        x:DataType="vm:LicenseTermsDialogViewModel"
+        Title="EBT Weather License Terms"
+        CanMinimize="False"
+        WindowStartupLocation="CenterOwner"
+        Width="650"
+        MinWidth="650"
+        Height="800"
+        MinHeight="800"
+>
+    <Grid
+        RowDefinitions="Auto,*,Auto,Auto"
+        RowSpacing="10"
+        Margin="10">
+        <Label
+            Grid.Row="0"
+            Content="License _Terms:"
+            Target="{Binding ElementName=LicenseTermsTextBlock}" />
+        <ScrollViewer
+            Grid.Row="1">
+            <!-- TODO: When user scrolls using keyboard, text scrolls to bottom immediately -->
+            <TextBox
+                Name="LicenseTermsTextBlock"
+                Focusable="True"
+                IsTabStop="True"
+                IsReadOnly="True"
+                SelectionBrush="Transparent"
+                Text="{Binding LicenseTermsText}" />
+        </ScrollViewer>
+        <Border
+            Grid.Row="2"
+            BorderThickness="1"
+            BorderBrush="{StaticResource BorderBrush}"
+            Margin="0, 10, 0, 10">
+            <StackPanel
+                Orientation="Vertical"
+                Margin="10">
+                <Label
+                    Content="Your _Decision:"
+                    Margin="0, 0, 0, 10" />
+                <RadioButton
+                    Content="I _reject these terms"
+                    GroupName="decision"
+                    IsChecked="{Binding DecisionReject}" />
+                <RadioButton
+                    Content="I _accept these terms"
+                    GroupName="decision"
+                    IsChecked="{Binding DecisionAccept}" />
+            </StackPanel>
+        </Border>
+        <Button
+            Name="OkButton"
+            Grid.Row="3"
+            Content="_OK"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding $parent[Window]}"
+            />
+    </Grid>
+</Window>
