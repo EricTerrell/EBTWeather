@@ -23,11 +23,22 @@ EBT Weather
 
 # Screenshots
 
+Current Weather:
 ![`Current Weather`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-main.png "EBT Weather Screenshot, Current Weather")
+
+Hourly Predictions:
 ![`Hourly Predictions`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-hourly.png "EBT Weather Screenshot, Hourly Predictions")
+
+Daily Predictions:
 ![`Daily Predictions`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-10-day.png "EBT Weather Screenshot, Daily Predictions")
+
+Historical Weather:
 ![`Historical Weather`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-historical.png "EBT Weather Screenshot, Historical Weather")
+
+Location Search:
 ![`Location Search`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-manage-locations-search.png "EBT Weather Screenshot, Location Search")
+
+Add Exact Location:
 ![`Add Exact Location`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-historical.png "EBT Weather Screenshot, Add Exact Location")
 
 # Links
