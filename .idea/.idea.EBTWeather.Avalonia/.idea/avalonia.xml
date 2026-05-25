@@ -9,7 +9,9 @@
         <entry key="EBTWeather.Avalonia/Views/AboutDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
         <entry key="EBTWeather.Avalonia/Views/CheckForUpdatesDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
         <entry key="EBTWeather.Avalonia/Views/DailyView.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/EditLocationDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
         <entry key="EBTWeather.Avalonia/Views/LicenseTermsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
+        <entry key="EBTWeather.Avalonia/Views/LocationView.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
         <entry key="EBTWeather.Avalonia/Views/MainWindow.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
         <entry key="EBTWeather.Avalonia/Views/ManageLocationsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />
         <entry key="EBTWeather.Avalonia/Views/SettingsDialog.axaml" value="EBTWeather.Avalonia/EBTWeather.Avalonia.csproj" />

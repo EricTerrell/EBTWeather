@@ -26,6 +26,8 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using EBTWeather.Avalonia.Messages;
 using EBTWeather.Avalonia.Misc;
 using EBTWeather.Avalonia.Models;
 using EBTWeather.Avalonia.UnitValues;
@@ -61,9 +63,9 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         ElevationSuffix = (Settings.Units == Units.USA ? ShortDistance.USASuffix : ShortDistance.MetricSuffix).Trim();
     }
-    
+
     private string _selectedLocationId = string.Empty;
-    
+
     private const int MinElevation = -1500;
     private const int MaxElevation = 30000;
 
@@ -71,66 +73,52 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     private const int MaxLongitudeDegrees = 180;
 
     private const int MaxMinutes = 59;
-    private const int MaxSeconds = 60;
+    private const int MaxSeconds = 59;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Location name is required")]
     [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
     private string _locationName = string.Empty;
 
-    [ObservableProperty] 
-    [Required] 
-    [Range(0, MaxLatitudeDegrees)] 
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    private int? _latitudeDegrees = 0;
+    [ObservableProperty] [Required] [Range(0, MaxLatitudeDegrees)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    private int? _latitudeDegrees;
 
-    [ObservableProperty] 
-    [Required] 
-    [Range(0, MaxMinutes)] 
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    private int? _latitudeMinutes = 0;
+    [ObservableProperty] [Required] [Range(0, MaxMinutes)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    private int? _latitudeMinutes;
 
     [ObservableProperty]
     [Required]
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     [CustomValidation(typeof(ManageLocationsDialogViewModel), nameof(ValidateSeconds))]
-    private double? _latitudeSeconds = 0.0;
+    private int? _latitudeSeconds;
 
     [ObservableProperty] private int? _latitudeDirection = 0;
 
-    [ObservableProperty] 
-    [Required] 
-    [Range(0, MaxLongitudeDegrees)] 
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    private int? _longitudeDegrees = 0;
+    [ObservableProperty] [Required] [Range(0, MaxLongitudeDegrees)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    private int? _longitudeDegrees;
 
-    [ObservableProperty] 
-    [Required] 
-    [Range(0, MaxMinutes)] 
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    private int? _longitudeMinutes = 0;
+    [ObservableProperty] [Required] [Range(0, MaxMinutes)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    private int? _longitudeMinutes;
 
-    [ObservableProperty] 
-    private int? _longitudeDirection = 1;
+    [ObservableProperty] private int? _longitudeDirection = 1;
 
     [ObservableProperty]
     [Required]
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     [CustomValidation(typeof(ManageLocationsDialogViewModel), nameof(ValidateSeconds))]
-    private double? _longitudeSeconds = 0.0;
+    private int? _longitudeSeconds;
 
     public ObservableCollection<LocationData> Locations { get; set; } = [];
 
     public ObservableCollection<LocationData> SavedLocationsData { get; set; } = new(Settings.LocationsData.Locations);
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
     private bool _specifyCountryCode = Settings.SpecifyCountryCode;
 
     partial void OnSpecifyCountryCodeChanged(bool value)
     {
         Settings.SpecifyCountryCode = value;
-        
+
         ValidateProperty(CountryCode, nameof(CountryCode));
     }
 
@@ -143,11 +131,11 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         Settings.CountryCode = value!;
     }
-    
+
     public static ValidationResult? ValidateCountryCode(string? countryCode, ValidationContext context)
     {
         var result = ValidationResult.Success;
-        
+
         if (context.ObjectInstance is ManageLocationsDialogViewModel manageLocationsDialogViewModel)
         {
             if (manageLocationsDialogViewModel.SpecifyCountryCode)
@@ -158,7 +146,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
                 }
             }
         }
-        
+
         return result;
     }
 
@@ -168,12 +156,17 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     public async Task Search()
     {
         ErrorMessage = string.Empty;
-        
+
         try
         {
             var result = await
                 _openMeteo.GetGeoLocations(LocationName, SpecifyCountryCode ? CountryCode : null);
 
+            if (result.Locations.Count == 0)
+            {
+                WeakReferenceMessenger.Default.Send(new ToastMessage($"No locations found for \"{LocationName}\""));
+            }
+            
             Locations.Clear();
             result.Locations.ForEach(locationData => Locations.Add(locationData));
         }
@@ -187,7 +180,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         return LocationName.Trim().Length > 0 && (!SpecifyCountryCode || CountryCode.Trim().Length > 0);
     }
-    
+
     [RelayCommand]
     public void AddLocation(LocationData location)
     {
@@ -195,7 +188,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         Settings.Locations.Add(location.Id, location);
 
         ReloadLocations();
-        
+
         _selectedLocationId = location.Id;
     }
 
@@ -203,10 +196,28 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     public void DeleteLocation(LocationData location)
     {
         Settings.Locations.Remove(location.Id);
-        
+
+        WeakReferenceMessenger.Default.Send(new ToastMessage($"Deleted \"{location}\""));
+
         ReloadLocations();
     }
 
+    [RelayCommand]
+    public async Task EditLocation(object parameter)
+    {
+        if (parameter is object[] parameters)
+        {
+            var location = parameters[0] as LocationData;
+            var window = parameters[1] as Window;
+
+            await new EditLocationDialog().Launch(window!, location!);
+            
+            ReloadLocations();
+        }
+    }
+
+    public string? AddLocationId { get; set; }
+    
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     [Required(ErrorMessage = "Location name is required")]
@@ -228,27 +239,26 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     private int? _elevation;
 
-    [ObservableProperty] 
-    private string _elevationSuffix;
-    
-    public string ShortDistanceSuffix => 
+    [ObservableProperty] private string _elevationSuffix;
+
+    public string ShortDistanceSuffix =>
         Settings.Units == Units.Metric ? ShortDistance.MetricSuffix : ShortDistance.USASuffix;
 
-    [ObservableProperty]
-    private string _errorMessage;
-    
+    [ObservableProperty] private string _errorMessage;
+
     [RelayCommand(CanExecute = nameof(CanAdd))]
-    private void Add()
+    private void Add(Window? window)
     {
-        var latitude = AngleUtils.DMSToDecimalDegrees(LatitudeDegrees.Value, LatitudeMinutes.Value,
-            LatitudeSeconds.Value);
+        var latitude = 
+            AngleUtils.DmsToDecimalDegrees(LatitudeDegrees!.Value, LatitudeMinutes!.Value, 
+                LatitudeSeconds!.Value);
 
         if (LatitudeDirection == 1)
         {
             latitude = -latitude;
         }
 
-        var longitude = AngleUtils.DMSToDecimalDegrees(LongitudeDegrees.Value, LongitudeMinutes.Value,
+        var longitude = AngleUtils.DmsToDecimalDegrees(LongitudeDegrees!.Value, LongitudeMinutes!.Value,
             LongitudeSeconds!.Value);
 
         if (LongitudeDirection == 1)
@@ -256,38 +266,60 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
             longitude = -longitude;
         }
 
-        var metricElevation = Elevation!.Value;
+        var elevation = Elevation!.Value;
 
         if (Settings.Units == Units.USA)
         {
-            metricElevation = (int) UnitsNet.Length.FromFeet(Elevation!.Value).Meters;
+            elevation = (int) UnitsNet.Length.FromFeet(Elevation!.Value).Meters;
         }
 
         var location = new LocationData(
             null,
-            AddLocationName,
-            new GeoLocation(latitude, longitude, new ShortDistance(metricElevation)),
-            AddCountryCode!.Trim().ToUpper(),
-            StateProvince!.Trim().ToUpper());
+            AddLocationName!,
+            new GeoLocation(latitude, longitude, new ShortDistance(elevation)),
+            AddCountryCode!.Trim(),
+            StateProvince!.Trim());
 
         location.Id = location.CalculateId();
-        
+
         Settings.Locations[location.Id] = location;
         _selectedLocationId = location.Id;
+
+        var message = window == null ? $"Added \"{location}\"" : $"Updated \"{location}\"";
+        WeakReferenceMessenger.Default.Send(new ToastMessage(message));
+
+        // Delete previous value if we're editing an existing value.
+        if (AddLocationId != null)
+        {
+            if (AddLocationId != location.Id)
+            {
+                Settings.Locations.Remove(AddLocationId);
+            }
+
+            AddLocationId = null;
+
+            // Close the window if a window was specified.
+            if (window != null)
+            {
+                window.Close();
+            }
+        }
         
         ReloadLocations();
     }
 
     private bool CanAdd()
     {
-        return AddLocationName != null && AddLocationName.Trim().Length > 0
-                                       && InRange(LatitudeDegrees, 0, MaxLatitudeDegrees)
-                                       && InRange(LatitudeMinutes, 0, MaxMinutes)
-                                       && InRangeSeconds(LatitudeSeconds)
-                                       && InRange(LongitudeDegrees, 0, MaxLongitudeDegrees)
-                                       && InRange(LongitudeMinutes, 0, MaxMinutes)
-                                       && InRangeSeconds(LongitudeSeconds)
-                                       && InRange(Elevation, MinElevation, MaxElevation);
+        return !string.IsNullOrWhiteSpace(AddLocationName)
+               && !string.IsNullOrWhiteSpace(CountryCode)
+               && !string.IsNullOrWhiteSpace(AddCountryCode)
+               && InRange(LatitudeDegrees, 0, MaxLatitudeDegrees)
+               && InRange(LatitudeMinutes, 0, MaxMinutes)
+               && InRange(LatitudeSeconds, 0, MaxSeconds)
+               && InRange(LongitudeDegrees, 0, MaxLongitudeDegrees)
+               && InRange(LongitudeMinutes, 0, MaxMinutes)
+               && InRange(LongitudeSeconds, 0, MaxSeconds)
+               && InRange(Elevation, MinElevation, MaxElevation);
     }
 
     public static ValidationResult ValidateSeconds(string value, ValidationContext context)
@@ -316,11 +348,6 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         return value >= min && value <= max;
     }
 
-    private static bool InRangeSeconds(double? value)
-    {
-        return value is >= 0 and < MaxSeconds;
-    }
-
     private void ReloadLocations()
     {
         SavedLocationsData.Clear();
@@ -331,7 +358,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     private void Close(Window window)
     {
         Settings.CurrentLocationIndex = GetLocationIndex(_selectedLocationId);
-        
+
         window.Close();
     }
 
@@ -344,7 +371,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     private async Task ChangeUnits(Window window)
     {
         await new SettingsDialog().Launch(window);
-        
+
         UpdateSuffix();
     }
 }

@@ -24,6 +24,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:EBTWeather.Avalonia.Converters"
+        xmlns:views="clr-namespace:EBTWeather.Avalonia.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="EBTWeather.Avalonia.Views.ManageLocationsDialog"
         x:DataType="vm:ManageLocationsDialogViewModel"
@@ -38,10 +39,10 @@
     <Design.DataContext>
         <vm:ManageLocationsDialogViewModel />
     </Design.DataContext>
-
     <Window.Resources>
-        <converters:StringToDmsConverter x:Key="StringToDmsConverter" />
+        <converters:DoubleToDmsConverter x:Key="DoubleToDmsConverter" />
         <converters:ShortDistanceFormattingConverter x:Key="ShortDistanceFormattingConverter" />
+        <converters:MultiParameterConverter x:Key="MultiParameterConverter" />
     </Window.Resources>
     <Grid Margin="10" RowDefinitions="*,Auto" ColumnDefinitions="*">
         <TabControl Grid.Row="0">
@@ -132,12 +133,12 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn
                                     Header="Latitude"
-                                    Binding="{Binding GeoLocation.Latitude, Converter={StaticResource StringToDmsConverter}, ConverterParameter='latitude'}"
+                                    Binding="{Binding GeoLocation.Latitude, Converter={StaticResource DoubleToDmsConverter}, ConverterParameter='latitude'}"
                                     CellStyleClasses="FixedWidthFont">
                                 </DataGridTextColumn>
                                 <DataGridTextColumn
                                     Header="Longitude"
-                                    Binding="{Binding GeoLocation.Longitude, Converter={StaticResource StringToDmsConverter}, ConverterParameter='longitude'}"
+                                    Binding="{Binding GeoLocation.Longitude, Converter={StaticResource DoubleToDmsConverter}, ConverterParameter='longitude'}"
                                     CellStyleClasses="FixedWidthFont">
                                 </DataGridTextColumn>
                                 <DataGridTemplateColumn Header="Elevation" CellStyleClasses="FixedWidthFont">
@@ -159,151 +160,13 @@
             </TabItem>
             <TabItem Header="_Add">
                 <StackPanel Orientation="Vertical">
-                    <Grid 
-                        RowDefinitions="Auto" 
-                        ColumnDefinitions="Auto,*"
-                        RowSpacing="10">
-                        <Label 
-                            Grid.Column="0"
-                            Content="_Location:"
-                            Target="{Binding ElementName=EnterLocationNameTextBox}"
-                        />
-                        <TextBox
-                            Grid.Column="1"
-                            Name="EnterLocationNameTextBox"
-                            Watermark="Enter Location Name"
-                            Text="{Binding AddLocationName, Mode=TwoWay}"
-                            Margin="0, 0, 0, 10"
-                        />
-                    </Grid>
-                    <Grid 
-                        RowDefinitions="Auto, Auto, Auto, Auto, Auto" 
-                        ColumnDefinitions="Auto, Auto"
-                        RowSpacing="10">
-                        <Label 
-                            Grid.Row="0" Grid.Column="0" 
-                            Content="La_titude:" 
-                            Target="{Binding ElementName=LatitudeUpDown}"
-                            VerticalAlignment="Center" />
-                        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                            <NumericUpDown
-                                Name="LatitudeUpDown"
-                                Watermark="degrees"
-                                Margin="5, 0, 0, 0" 
-                                FormatString="N0"
-                                Width="150"
-                                Value="{Binding LatitudeDegrees}"/>
-                            <NumericUpDown 
-                                Watermark="minutes"
-                                Margin="5, 0, 0, 0" 
-                                FormatString="N0"
-                                Width="150"
-                                Value="{Binding LatitudeMinutes}"/>
-                            <NumericUpDown 
-                                Watermark="seconds"
-                                Margin="5, 0, 0, 0" 
-                                Width="100"
-                                Value="{Binding LatitudeSeconds}"
-                                ShowButtonSpinner="False"
-                            />
-                            <ComboBox SelectedIndex="{Binding LatitudeDirection, Mode=TwoWay}">
-                                <ComboBoxItem>N</ComboBoxItem>
-                                <ComboBoxItem>S</ComboBoxItem>
-                            </ComboBox>
-                        </StackPanel>
-                        <Label 
-                            Grid.Row="1" Grid.Column="0" 
-                            Content="L_ongitude:" 
-                            VerticalAlignment="Center"
-                            Target="{Binding ElementName=LongitudeUpDown}"
-                            />
-                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-                            <NumericUpDown
-                                Name="LongitudeUpDown"
-                                Watermark="degrees"
-                                Margin="5, 0, 0, 0" 
-                                FormatString="N0"
-                                Width="150"
-                                Minimum="0" 
-                                Maximum="180"
-                                Value="{Binding LongitudeDegrees}"/>
-                            <NumericUpDown 
-                                Watermark="minutes"
-                                Margin="5, 0, 0, 0" 
-                                FormatString="N0"
-                                Width="150"
-                                Minimum="0" 
-                                Maximum="59"
-                                Value="{Binding LongitudeMinutes}"/>
-                            <NumericUpDown 
-                                Watermark="seconds"
-                                Margin="5, 0, 0, 0" 
-                                Width="100"
-                                Value="{Binding LongitudeSeconds}"
-                                ShowButtonSpinner="False"
-                                />
-                            <ComboBox SelectedIndex="{Binding LongitudeDirection, Mode=TwoWay}">
-                                <ComboBoxItem>E</ComboBoxItem>
-                                <ComboBoxItem>W</ComboBoxItem>
-                            </ComboBox>
-                        </StackPanel>
-                        <Grid 
-                            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
-                            RowSpacing="10"
-                            RowDefinitions="Auto, Auto, Auto" 
-                            ColumnDefinitions="Auto, Auto"
-                            Margin="0, 10, 0, 0"
-                            >
-                            <Label 
-                                Grid.Row="0" Grid.Column="0" 
-                                VerticalAlignment="Center"
-                                Content="State/_Province:"
-                                Target="{Binding ElementName=StateProvinceTextBox}"/>
-                            <TextBox 
-                                Grid.Row="0" Grid.Column="1"
-                                Name="StateProvinceTextBox"
-                                Text="{Binding StateProvince, Mode=TwoWay}"/>
-                            <Label 
-                                Grid.Row="1" Grid.Column="0"
-                                VerticalAlignment="Center"
-                                Content="Co_untry Code:"
-                                Target="{Binding ElementName=CountryCodeTextBox}"
-                                />
-                            <TextBox 
-                                Name="CountryCodeTextBox"
-                                Grid.Row="1" Grid.Column="1" 
-                                Text="{Binding AddCountryCode, Mode=TwoWay}"/>
-                            <Label 
-                                Grid.Row="2" Grid.Column="0"
-                                VerticalAlignment="Center"
-                                Content="Ele_vation:"
-                                Target="{Binding ElementName=ElevationUpDown}"/>
-                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                                <NumericUpDown
-                                    Name="ElevationUpDown"
-                                    Watermark="elevation"
-                                    Margin="5, 0, 0, 0" 
-                                    FormatString="N0"
-                                    Value="{Binding Elevation}"/>
-                                <TextBlock 
-                                    Text="{Binding ElevationSuffix}" 
-                                    Margin="10, 0, 0, 0" 
-                                    VerticalAlignment="Center" />
-                                <Button
-                                    Content="C_hange Units..."
-                                    Command="{Binding ChangeUnitsCommand}"
-                                    CommandParameter="{Binding $parent[Window]}"
-                                    Margin="10, 0, 0, 0"
-                                    />
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
+                    <views:LocationView />
                     <Button Content="A_dd" 
                             Margin="0, 20, 0, 0"
                             Command="{Binding AddCommand}" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="D_elete">
+            <TabItem Header="Edit/D_elete">
                 <Grid RowDefinitions="Auto,*">
                     <Label
                         Grid.Row="0"
@@ -323,11 +186,28 @@
                                   Margin="0, 10, 0, 10"
                                   Name="LocationsDataGrid">
                             <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Edit">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                Content="Edit"
+                                                Command="{Binding $parent[DataGrid].((vm:ManageLocationsDialogViewModel)DataContext).EditLocationCommand}"
+                                                >
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                                                    <Binding />
+                                                    <Binding Path="$parent[Window]" />
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="Delete">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button
-                                                Content="-"
+                                                Content="Delete"
                                                 Command="{Binding $parent[DataGrid].((vm:ManageLocationsDialogViewModel)DataContext).DeleteLocationCommand}"
                                                 CommandParameter="{Binding}" />
                                         </DataTemplate>
@@ -347,12 +227,12 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn
                                     Header="Latitude"
-                                    Binding="{Binding GeoLocation.Latitude, Converter={StaticResource StringToDmsConverter}, ConverterParameter='latitude'}"
+                                    Binding="{Binding GeoLocation.Latitude, Converter={StaticResource DoubleToDmsConverter}, ConverterParameter='latitude'}"
                                     CellStyleClasses="FixedWidthFont">
                                 </DataGridTextColumn>
                                 <DataGridTextColumn
                                     Header="Longitude"
-                                    Binding="{Binding GeoLocation.Longitude, Converter={StaticResource StringToDmsConverter}, ConverterParameter='longitude'}"
+                                    Binding="{Binding GeoLocation.Longitude, Converter={StaticResource DoubleToDmsConverter}, ConverterParameter='longitude'}"
                                     CellStyleClasses="FixedWidthFont">
                                 </DataGridTextColumn>
                                 <DataGridTemplateColumn Header="Elevation" CellStyleClasses="FixedWidthFont">

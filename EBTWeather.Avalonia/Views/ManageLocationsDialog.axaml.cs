@@ -18,7 +18,11 @@
   along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System;
+using Avalonia.Controls.Notifications;
 using Avalonia.Interactivity;
+using CommunityToolkit.Mvvm.Messaging;
+using EBTWeather.Avalonia.Messages;
 using EBTWeather.Avalonia.ViewModels;
 
 namespace EBTWeather.Avalonia.Views;
@@ -28,12 +32,35 @@ public partial class ManageLocationsDialog : CustomDialog<ManageLocationsDialogV
     public ManageLocationsDialog()
     {
         InitializeComponent();
+
+        _notificationManager = new WindowNotificationManager(this)
+        {
+            Position = NotificationPosition.BottomCenter,
+            MaxItems = 1
+        };
+        
+        // Display information about menu items as each one is highlighted
+        WeakReferenceMessenger.Default.Register<ManageLocationsDialog, ToastMessage>
+        (this, (vm, msg) => { ShowToast(msg.ToastText); }
+        );
     }
 
+    private readonly WindowNotificationManager _notificationManager;
+    
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
 
         LocationNameTextBox.Focus();
+    }
+
+    private void ShowToast(string message)
+    {
+        _notificationManager.Show(new Notification(
+            title: null, 
+            message: message, 
+            type: NotificationType.Information, 
+            expiration: TimeSpan.FromSeconds(2.5)
+        ));
     }
 }

@@ -9,7 +9,7 @@ EBT Weather delivers current and historical weather directly to your desktop com
 
 With EBT Weather, displaying historical weather data is as easy as accessing current weather. Just click on the "Historical" tab and select a date range.
 
-EBT Weather displays weather data from a list of your locations. Search for locations, or specify an exact location, down to a fraction of an arc second.
+EBT Weather displays weather data from a list of your locations. Search for locations, or specify an exact location, down to the arc second.
 
 EBT Weather is available for Windows and Linux. And of course, EBT Weather is open source!
 
@@ -51,6 +51,10 @@ Add Exact Location:
 # License
 
 [`GPL3`](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+# Weather Data
+
+EBT Weather gets its current weather data, historical data, and location data from [`open-meteo`](https://open-meteo.com/).
 
 # Feedback
 
