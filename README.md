@@ -39,7 +39,7 @@ Location Search:
 ![`Location Search`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-manage-locations-search.png "EBT Weather Screenshot, Location Search")
 
 Add Exact Location:
-![`Add Exact Location`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-historical.png "EBT Weather Screenshot, Add Exact Location")
+![`Add Exact Location`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-manage-locations-add.png "EBT Weather Screenshot, Add Exact Location")
 
 # Links
 
