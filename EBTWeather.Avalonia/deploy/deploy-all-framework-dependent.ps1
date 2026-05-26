@@ -24,4 +24,8 @@ cd "~\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\
 .\deploy-linux-framework-dependent.ps1
 .\deploy-windows-framework-dependent.ps1
 
-
+Write-Output ""
+Write-Output "***************************************"
+Write-Output "Now run Inno Setup (Build/Compile)"
+Write-Output "Then run build_windows_setup_zip.ps1"
+Write-Output "***************************************"

@@ -78,7 +78,7 @@
                                     Name="SearchCountryCodeTextBox"
                                     Watermark="2-Letter Country Code"
                                     MaxLength="2"
-                                    Text="{Binding CountryCode}" />
+                                    Text="{Binding SearchCountryCode}" />
                                 <HyperlinkButton 
                                     Content="list of codes"
                                     NavigateUri="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" />
@@ -113,7 +113,7 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button
-                                                Content="+"
+                                                Content="Add"
                                                 Command="{Binding $parent[DataGrid].((vm:ManageLocationsDialogViewModel)DataContext).AddLocationCommand}"
                                                 CommandParameter="{Binding}" />
                                         </DataTemplate>

@@ -229,8 +229,6 @@ public class OpenMeteo
             new Temperature(responseObject.daily.temperature_2m_max[i]), 
             responseObject.daily.sunrise[i], 
             responseObject.daily.sunset[i], 
-            responseObject.daily.daylight_duration[i], 
-            responseObject.daily.sunshine_duration[i], 
             responseObject.daily.uv_index_max[i] ?? Double.NaN, 
             new Pressure(responseObject.daily.pressure_msl_mean[i]),
             responseObject.daily.relative_humidity_2m_mean[i],
@@ -328,7 +326,7 @@ public class OpenMeteo
 
     private static string GetCurrentWeatherRequestUri(LocationData locationData)
     {
-        return $"/v1/forecast?latitude={locationData.GeoLocation.Latitude}&longitude={locationData.GeoLocation.Longitude}&elevation={locationData.GeoLocation.Elevation.MetricValue}&timezone=auto&forecast_days=10&daily=cloud_cover_mean,visibility_mean,relative_humidity_2m_mean,dew_point_2m_mean,pressure_msl_mean,wind_gusts_10m_mean,wind_speed_10m_mean,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,precipitation_hours,precipitation_probability_max,wind_gusts_10m_max,wind_speed_10m_max,wind_direction_10m_dominant,weather_code&hourly=cloud_cover,precipitation_probability,precipitation,apparent_temperature,temperature_2m,dew_point_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m,snowfall,rain,showers,weather_code,visibility,pressure_msl&current=dew_point_2m,is_day,uv_index,apparent_temperature,weather_code,temperature_2m,wind_speed_10m,wind_gusts_10m,relative_humidity_2m,pressure_msl,wind_direction_10m,visibility,cloud_cover&temperature_unit=celsius&wind_speed_unit=kmh&pressure_msl_unit=hPa";
+        return $"/v1/forecast?latitude={locationData.GeoLocation.Latitude}&longitude={locationData.GeoLocation.Longitude}&elevation={locationData.GeoLocation.Elevation.MetricValue}&timezone=auto&forecast_days=10&daily=cloud_cover_mean,visibility_mean,relative_humidity_2m_mean,dew_point_2m_mean,pressure_msl_mean,wind_gusts_10m_mean,wind_speed_10m_mean,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,precipitation_probability_max,wind_gusts_10m_max,wind_speed_10m_max,wind_direction_10m_dominant,weather_code&hourly=cloud_cover,precipitation_probability,precipitation,apparent_temperature,temperature_2m,dew_point_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m,weather_code,visibility,pressure_msl&current=dew_point_2m,is_day,uv_index,apparent_temperature,weather_code,temperature_2m,wind_speed_10m,wind_gusts_10m,relative_humidity_2m,pressure_msl,wind_direction_10m,visibility,cloud_cover&temperature_unit=celsius&wind_speed_unit=kmh&pressure_msl_unit=hPa";
     }
 
     public async Task<HistoricalWeatherInfo> GetCachedHistoricalWeather(LocationData locationData, DateOnly startDate,
@@ -359,7 +357,7 @@ public class OpenMeteo
         var startDateString = startDate.ToString(dateFormat, CultureInfo.InvariantCulture);
         var endDateString = endDate.ToString(dateFormat, CultureInfo.InvariantCulture);
 
-        return $"/v1/archive?latitude={locationData.GeoLocation.Latitude}&longitude={locationData.GeoLocation.Longitude}&elevation={locationData.GeoLocation.Elevation.MetricValue}&timezone=auto&start_date={startDateString}&end_date={endDateString}&daily=visibility_mean,relative_humidity_2m_mean,dew_point_2m_mean,pressure_msl_mean,wind_gusts_10m_mean,wind_speed_10m_mean,cloud_cover_mean,weather_code,uv_index_max,temperature_2m_max,temperature_2m_min,apparent_temperature_min,apparent_temperature_max,sunrise,sunset,daylight_duration,sunshine_duration,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
+        return $"/v1/archive?latitude={locationData.GeoLocation.Latitude}&longitude={locationData.GeoLocation.Longitude}&elevation={locationData.GeoLocation.Elevation.MetricValue}&timezone=auto&start_date={startDateString}&end_date={endDateString}&daily=visibility_mean,relative_humidity_2m_mean,dew_point_2m_mean,pressure_msl_mean,wind_gusts_10m_mean,wind_speed_10m_mean,cloud_cover_mean,weather_code,uv_index_max,temperature_2m_max,temperature_2m_min,apparent_temperature_min,apparent_temperature_max,sunrise,sunset,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant";
     }
     
     public async Task<HistoricalWeatherInfo> GetHistoricalWeather(LocationData locationData, DateOnly startDate, 
@@ -427,8 +425,6 @@ public class OpenMeteo
                 new Temperature(responseObject.daily.temperature_2m_max[i]),
                 responseObject.daily.sunrise[i],
                 responseObject.daily.sunset[i],
-                responseObject.daily.daylight_duration[i],
-                responseObject.daily.sunshine_duration[i],
                 responseObject.daily.uv_index_max[i] ?? Double.NaN,
                 new Pressure(responseObject.daily.pressure_msl_mean[i]),
                 responseObject.daily.relative_humidity_2m_mean[i],

@@ -29,8 +29,6 @@ public class Daily
     public double[] temperature_2m_min { get; set; }
     public string[] sunrise { get; set; }
     public string[] sunset { get; set; }
-    public double[] daylight_duration { get; set; }
-    public double[] sunshine_duration { get; set; }
     public double?[] uv_index_max { get; set; }
     public double[] precipitation_sum { get; set; }
     public int[] precipitation_probability_max { get; set; }

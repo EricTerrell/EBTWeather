@@ -20,6 +20,9 @@
 
 Push-Location
 
+Write-Output ""
+Write-Output "Creating Windows Setup Zip File"
+
 c:
 cd "~\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia"
 
@@ -29,5 +32,8 @@ if (!(Test-Path "C:\temp\EBTWeather"))
 }
 
 Compress-Archive -Path ".\setup\Output\*" -DestinationPath "C:\temp\EBTWeather\EBTWeather-win32-x64.zip" -Force
+
+Write-Output ""
+Write-Output "Finished creating Windows Setup Zip File"
 
 Pop-Location

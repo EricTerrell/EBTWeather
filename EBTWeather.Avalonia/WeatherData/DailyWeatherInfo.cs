@@ -30,8 +30,6 @@ public record DailyWeatherInfo(
     Temperature TemperatureMax, 
     string Sunrise, 
     string Sunset, 
-    double DaylightDuration, 
-    double SunshineDuration, 
     double UvIndexMax,
     Pressure AirPressureMean,
     double RelativeHumidityMean,

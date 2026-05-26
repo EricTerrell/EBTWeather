@@ -46,12 +46,6 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         _openMeteo = new OpenMeteo(httpClientFactory);
 
         UpdateSuffix();
-
-        if (Settings.CurrentLocationIndex >= 0 &&
-            Settings.CurrentLocationIndex < Settings.LocationsData.Locations.Count)
-        {
-            _selectedLocationId = Settings.LocationsData.Locations[Settings.CurrentLocationIndex].Id;
-        }
     }
 
     // Allow XAML Preview to work
@@ -63,8 +57,6 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         ElevationSuffix = (Settings.Units == Units.USA ? ShortDistance.USASuffix : ShortDistance.MetricSuffix).Trim();
     }
-
-    private string _selectedLocationId = string.Empty;
 
     private const int MinElevation = -1500;
     private const int MaxElevation = 30000;
@@ -119,15 +111,15 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         Settings.SpecifyCountryCode = value;
 
-        ValidateProperty(CountryCode, nameof(CountryCode));
+        ValidateProperty(SearchCountryCode, nameof(SearchCountryCode));
     }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
     [CustomValidation(typeof(ManageLocationsDialogViewModel), nameof(ValidateCountryCode))]
-    private string _countryCode = Settings.CountryCode;
+    private string _searchCountryCode = Settings.CountryCode;
 
-    partial void OnCountryCodeChanged(string? value)
+    partial void OnSearchCountryCodeChanged(string? value)
     {
         Settings.CountryCode = value!;
     }
@@ -140,7 +132,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         {
             if (manageLocationsDialogViewModel.SpecifyCountryCode)
             {
-                if (string.IsNullOrWhiteSpace(manageLocationsDialogViewModel.CountryCode))
+                if (string.IsNullOrWhiteSpace(manageLocationsDialogViewModel.SearchCountryCode))
                 {
                     result = new ValidationResult("Country code is required");
                 }
@@ -160,7 +152,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         try
         {
             var result = await
-                _openMeteo.GetGeoLocations(LocationName, SpecifyCountryCode ? CountryCode : null);
+                _openMeteo.GetGeoLocations(LocationName, SpecifyCountryCode ? SearchCountryCode : null);
 
             if (result.Locations.Count == 0)
             {
@@ -178,7 +170,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
 
     public bool CanSearch()
     {
-        return LocationName.Trim().Length > 0 && (!SpecifyCountryCode || CountryCode.Trim().Length > 0);
+        return LocationName.Trim().Length > 0 && (!SpecifyCountryCode || SearchCountryCode.Trim().Length > 0);
     }
 
     [RelayCommand]
@@ -186,20 +178,41 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         Settings.Locations.Remove(location.Id);
         Settings.Locations.Add(location.Id, location);
+        
+        WeakReferenceMessenger.Default.Send(new ToastMessage($"Added \"{location}\""));
 
         ReloadLocations();
 
-        _selectedLocationId = location.Id;
+        Settings.CurrentLocationIndex = Settings.LocationIndexFromId(location.Id);
     }
 
+    /// <summary>
+    /// Delete the specified location. Try to keep Settings.CurrentLocationIndex pointing to the correct location,
+    /// unless the current location is the one being deleted.
+    /// </summary>
+    /// <param name="location">Location to delete</param>
     [RelayCommand]
     public void DeleteLocation(LocationData location)
     {
+        string? selectedLocationId = null;
+        
+        if (Settings.CurrentLocationIndex >= 0 &&
+            Settings.CurrentLocationIndex < Settings.LocationsData.Locations.Count)
+        {
+            // Get the id of the currently selected location
+            selectedLocationId = Settings.LocationsData.Locations[Settings.CurrentLocationIndex].Id;
+        }
+
         Settings.Locations.Remove(location.Id);
 
         WeakReferenceMessenger.Default.Send(new ToastMessage($"Deleted \"{location}\""));
 
         ReloadLocations();
+
+        if (selectedLocationId != null)
+        {
+            Settings.CurrentLocationIndex = Settings.LocationIndexFromId(selectedLocationId);
+        }
     }
 
     [RelayCommand]
@@ -283,7 +296,6 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         location.Id = location.CalculateId();
 
         Settings.Locations[location.Id] = location;
-        _selectedLocationId = location.Id;
 
         var message = window == null ? $"Added \"{location}\"" : $"Updated \"{location}\"";
         WeakReferenceMessenger.Default.Send(new ToastMessage(message));
@@ -299,19 +311,17 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
             AddLocationId = null;
 
             // Close the window if a window was specified.
-            if (window != null)
-            {
-                window.Close();
-            }
+            window?.Close();
         }
         
+        Settings.CurrentLocationIndex = Settings.LocationIndexFromId(location.Id);
+
         ReloadLocations();
     }
 
     private bool CanAdd()
     {
         return !string.IsNullOrWhiteSpace(AddLocationName)
-               && !string.IsNullOrWhiteSpace(CountryCode)
                && !string.IsNullOrWhiteSpace(AddCountryCode)
                && InRange(LatitudeDegrees, 0, MaxLatitudeDegrees)
                && InRange(LatitudeMinutes, 0, MaxMinutes)
@@ -357,14 +367,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     [RelayCommand]
     private void Close(Window window)
     {
-        Settings.CurrentLocationIndex = GetLocationIndex(_selectedLocationId);
-
         window.Close();
-    }
-
-    private static int GetLocationIndex(string id)
-    {
-        return Settings.LocationsData.Locations.FindIndex(0, l => l.Id == id);
     }
 
     [RelayCommand]

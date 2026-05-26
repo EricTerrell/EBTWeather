@@ -64,6 +64,11 @@ public static class Settings
         }
     }
 
+    public static int LocationIndexFromId(string locationId)
+    {
+        return LocationsData.Locations.FindIndex(location => location.Id == locationId);
+    }
+
     private static readonly string SettingsFolder = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "EBT Weather");

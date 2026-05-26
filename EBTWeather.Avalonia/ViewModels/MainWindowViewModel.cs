@@ -101,7 +101,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public static DateTime HistoricalMinDate => new(1950, 1, 1);
 
-    public static DateTime HistoricalMaxDate => DateTime.Now.AddDays(-1);
+    public static DateTime HistoricalMaxDate { get; set; } = DateTime.Now.AddDays(-1);
 
     [ObservableProperty] private DateOnly? _historicalSelectedMinDate;
 
@@ -127,7 +127,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Log.Info("OnCurrentLocationIndexChanged");
 
-        Settings.CurrentLocationIndex = value.Value;
+        Settings.CurrentLocationIndex = value!.Value;
 
         // Want to clear the current and historical weather displays. It can be confusing when the retrieval of the
         // new data is slow. In this case the user could incorrectly assume the data on the screen corresponds with the
@@ -216,6 +216,9 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             Log.Info("timer tick");
 
+            // Need to update max date on date picker in case the app ran past midnight.
+            HistoricalMaxDate = DateTime.Now.AddDays(-1);
+                
             await CheckForUpdates();
 
             await UpdateWeatherData();
