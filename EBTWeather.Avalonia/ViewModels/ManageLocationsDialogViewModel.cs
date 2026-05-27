@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -34,6 +35,7 @@ using EBTWeather.Avalonia.UnitValues;
 using EBTWeather.Avalonia.Views;
 using EBTWeather.Avalonia.WebService;
 using log4net;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EBTWeather.Avalonia.ViewModels;
 
@@ -223,7 +225,46 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
             var location = parameters[0] as LocationData;
             var window = parameters[1] as Window;
 
-            await new EditLocationDialog().Launch(window!, location!);
+            var viewModel = 
+                (Application.Current as App)!.ServiceProvider.GetRequiredService<ManageLocationsDialogViewModel>();
+        
+            viewModel.AddLocationId = location!.Id;
+            viewModel.AddLocationName = location.Name;
+
+            var latitude = AngleUtils.ConvertToDms(location.GeoLocation.Latitude);
+
+            viewModel.LatitudeDegrees = Math.Abs(latitude.Degrees);
+            viewModel.LatitudeDirection = AngleUtils.DegreesToDirection(latitude.Degrees);
+
+            viewModel.LatitudeMinutes = latitude.Minutes;
+            viewModel.LatitudeSeconds = latitude.Seconds;
+        
+            var longitude = AngleUtils.ConvertToDms(location.GeoLocation.Longitude);
+
+            viewModel.LongitudeDegrees = Math.Abs(longitude.Degrees);
+            viewModel.LongitudeDirection = AngleUtils.DegreesToDirection(longitude.Degrees);
+
+            viewModel.LongitudeMinutes = longitude.Minutes;
+            viewModel.LongitudeSeconds = longitude.Seconds;
+
+            var elevation = location.GeoLocation.Elevation.MetricValue;
+
+            if (Settings.Units == Units.USA)
+            {
+                elevation = UnitsNet.Length.FromMeters(elevation).Feet;
+            }
+
+            viewModel.Elevation = (int) Math.Round(elevation);
+
+            viewModel.StateProvince = location.Admin1;
+            viewModel.AddCountryCode = location.CountryCode;
+
+            var editLocationDialog = new EditLocationDialog
+            {
+                DataContext = viewModel
+            };
+
+            await editLocationDialog.ShowDialog(window!);
             
             ReloadLocations();
         }

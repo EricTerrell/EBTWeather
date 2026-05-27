@@ -209,9 +209,8 @@ public class OpenMeteo
 
         var now = DateTime.Now.ToUniversalTime();
         
-        var todayStart = DateTime.SpecifyKind(new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0), DateTimeKind.Utc);
-        
-        var tomorrow = DateTime.SpecifyKind(DateTime.Now.ToUniversalTime(), DateTimeKind.Utc).AddDays(1);
+        var todayStart = DateTime.SpecifyKind(
+            new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0), DateTimeKind.Utc);
         
         var hourlyWeatherForRestOfTodayAndFuture = 
             hourlyWeatherInfo.Where(item => item.DateTime >= todayStart).ToList();

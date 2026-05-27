@@ -18,64 +18,16 @@
   along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using EBTWeather.Avalonia.Misc;
-using EBTWeather.Avalonia.Models;
-using EBTWeather.Avalonia.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace EBTWeather.Avalonia.Views;
 
-public partial class EditLocationDialog : CustomDialog<ManageLocationsDialogViewModel>
+public partial class EditLocationDialog : Window
 {
     public EditLocationDialog()
     {
         InitializeComponent();
-    }
-    
-    public virtual async Task Launch(Window window, LocationData location)
-    {
-        var viewModel = 
-            (Application.Current as App)!.ServiceProvider.GetRequiredService<ManageLocationsDialogViewModel>();
-        
-        viewModel.AddLocationId = location.Id;
-        viewModel.AddLocationName = location.Name;
-
-        var latitude = AngleUtils.ConvertToDms(location.GeoLocation.Latitude);
-
-        viewModel.LatitudeDegrees = Math.Abs(latitude.Degrees);
-        viewModel.LatitudeDirection = AngleUtils.DegreesToDirection(latitude.Degrees);
-
-        viewModel.LatitudeMinutes = latitude.Minutes;
-        viewModel.LatitudeSeconds = latitude.Seconds;
-        
-        var longitude = AngleUtils.ConvertToDms(location.GeoLocation.Longitude);
-
-        viewModel.LongitudeDegrees = Math.Abs(longitude.Degrees);
-        viewModel.LongitudeDirection = AngleUtils.DegreesToDirection(longitude.Degrees);
-
-        viewModel.LongitudeMinutes = longitude.Minutes;
-        viewModel.LongitudeSeconds = longitude.Seconds;
-
-        var elevation = location.GeoLocation.Elevation.MetricValue;
-
-        if (Settings.Units == Units.USA)
-        {
-            elevation = UnitsNet.Length.FromMeters(elevation).Feet;
-        }
-
-        viewModel.Elevation = (int) Math.Round(elevation);
-
-        viewModel.StateProvince = location.Admin1;
-        viewModel.AddCountryCode = location.CountryCode;
-
-        DataContext = viewModel;
-
-        await ShowDialog<bool>(window);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
