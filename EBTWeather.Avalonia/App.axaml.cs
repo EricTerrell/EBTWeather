@@ -105,6 +105,10 @@ public partial class App : Application
     private async Task Activated()
     {
         Log.Info("Activated");
+
+        // When the app is on a Linux machine which sleeps, the display is not updated. When the machine is awoken,
+        // it will only be updated after the next timer tick. We force an update here if the user activates the app.
+        await _mainWindowViewModel.UpdateWeatherData();
     }
     
     private static void AddServices(IServiceCollection services)
