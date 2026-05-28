@@ -235,13 +235,14 @@ public partial class MainWindowViewModel : ViewModelBase
             var now = DateTimeOffset.Now;
             var elapsedTime = now - Settings.LastAutomaticCheckForUpdates;
 
-            Log.Info(
-                $"Checking for updates now={now} LastCheckForUpdates={Settings.LastAutomaticCheckForUpdates} elapsedTime={elapsedTime} ({elapsedTime.Days} days)");
-
             if (elapsedTime >= Constants.CheckForUpdatesInterval)
             {
-                var isUpdateAvailable = await new AppVersion(HttpClientFactory).IsUpdateAvailable();
+                Log.Info(
+                    $"Checking for updates now={now} LastCheckForUpdates={Settings.LastAutomaticCheckForUpdates} elapsedTime={elapsedTime} ({elapsedTime.Days} days)");
 
+                var isUpdateAvailable = await new AppVersion(HttpClientFactory).IsUpdateAvailable();
+                Settings.LastAutomaticCheckForUpdates = DateTimeOffset.Now;
+                
                 if (isUpdateAvailable && ApplicationUtils.GetMainWindow() is { } window)
                 {
                     Log.Info("Launching check for updates dialog");
