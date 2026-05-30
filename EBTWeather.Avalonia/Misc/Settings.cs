@@ -28,6 +28,10 @@ using log4net;
 
 namespace EBTWeather.Avalonia.Misc;
 
+/// <summary>
+/// In-memory user preferences which are loaded from a file, and saved to the file before shutdown.
+/// TODO: Should build upon this: https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration#configuration-providers
+/// </summary>
 public static class Settings
 {
     private static readonly ILog Log = LogManager.GetLogger(typeof(Settings));

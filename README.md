@@ -41,6 +41,11 @@ Location Search:
 Add Exact Location:
 ![`Add Exact Location`](https://www.ericbt.com/artwork/EBTWeather/ebt-weather-screenshot-manage-locations-add.png "EBT Weather Screenshot, Add Exact Location")
 
+# Arguments
+
+A `--minimize` argument specified when the app is launched will launch the app minimized. Otherwise it will launch
+with normal main window.
+
 # Links
 
 * [`website`](https://www.ericbt.com/ebt_weather)

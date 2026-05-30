@@ -22,6 +22,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
@@ -67,9 +68,13 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Should the app launch minimized?
+            var minimized = desktop.Args!.ToList().FindIndex(0, arg => arg == "--minimize") != -1;
+
             desktop.MainWindow = new MainWindow
             {
-                DataContext = _mainWindowViewModel
+                DataContext = _mainWindowViewModel,
+                WindowState = minimized ? WindowState.Minimized : WindowState.Normal
             };
 
             desktop.Startup += (sender, args) => OnStartup();
