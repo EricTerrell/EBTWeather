@@ -99,9 +99,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private int? _currentLocationIndex = Settings.CurrentLocationIndex;
 
-    public static DateTime HistoricalMinDate => new(1950, 1, 1);
+    [ObservableProperty]
+    private DateTime _historicalMinDate = new(1950, 1, 1);
 
-    public static DateTime HistoricalMaxDate { get; set; } = DateTime.Now.AddDays(-1);
+    [ObservableProperty]
+    private DateTime _historicalMaxDate = DateTime.Now.AddDays(-1);
 
     [ObservableProperty] private DateOnly? _historicalSelectedMinDate;
 
@@ -253,7 +255,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public async Task UpdateWeatherData()
+    private async Task UpdateWeatherData()
     {
         if (CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count)
         {
@@ -345,6 +347,12 @@ public partial class MainWindowViewModel : ViewModelBase
         await new CheckForUpdatesDialog().Launch(window);
     }
 
+    [RelayCommand]
+    private async Task Refresh()
+    {
+        UpdateWeatherData();
+    }
+    
     /// <summary>
     /// Display help text for menu items in status bar when each menu item is highlighted.
     /// </summary>

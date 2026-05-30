@@ -74,7 +74,6 @@ public partial class App : Application
 
             desktop.Startup += (sender, args) => OnStartup();
             desktop.Exit += (sender, args) => OnShutdown();
-            desktop.MainWindow.Activated += async (sender, args) => await Activated();
 
             if (!Settings.AcceptedLicenseTerms)
             {
@@ -102,15 +101,6 @@ public partial class App : Application
         Settings.Save();    
     }
 
-    private async Task Activated()
-    {
-        Log.Info("Activated");
-
-        // When the app is on a Linux machine which sleeps, the display is not updated. When the machine is awoken,
-        // it will only be updated after the next timer tick. We force an update here if the user activates the app.
-        await _mainWindowViewModel.UpdateWeatherData();
-    }
-    
     private static void AddServices(IServiceCollection services)
     {
         services.AddMemoryCache(options =>

@@ -27,7 +27,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:EBTWeather.Avalonia.Converters"
         xmlns:misc="clr-namespace:EBTWeather.Avalonia.Misc"
-        mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="750"
+        mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="765"
         x:Class="EBTWeather.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         x:CompileBindings="False"
@@ -35,7 +35,7 @@
         Title="EBT Weather"
         Width="1400"
         MinWidth="400"
-        Height="750"
+        Height="765"
         MinHeight="250">
     <Design.DataContext>
         <vm:MainWindowViewModel />
@@ -49,7 +49,7 @@
         <converters:ShortTimeConverter x:Key="ShortTimeConverter" />
     </Window.Resources>
     <Grid
-        RowDefinitions="Auto,Auto,*,Auto">
+        RowDefinitions="Auto,Auto,*,Auto,Auto">
         <Menu 
             Grid.Row="0"
             Name="MenuMain">
@@ -427,8 +427,8 @@
                             Focusable="True"
                             IsTabStop="True"
                             SelectionMode="SingleRange"
-                            DisplayDateStart="{Binding HistoricalMinDate}"
-                            DisplayDateEnd="{Binding HistoricalMaxDate}"
+                            DisplayDateStart="{Binding HistoricalMinDate, Mode=OneWay}"
+                            DisplayDateEnd="{Binding HistoricalMaxDate, Mode=OneWay}"
                             SelectedDatesChanged="Calendar_OnSelectedDatesChanged"
                             VerticalAlignment="Top" />
                         <StackPanel
@@ -574,8 +574,13 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <StackPanel
+        <Button 
             Grid.Row="3"
+            Content="_Refresh"
+            Command="{Binding RefreshCommand}"
+            Margin="10"/>
+        <StackPanel
+            Grid.Row="4"
             VerticalAlignment="Bottom"
             Background="DarkSlateGray"
             Margin="-10, 0, -10, 0">
