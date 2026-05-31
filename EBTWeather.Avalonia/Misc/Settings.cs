@@ -29,31 +29,69 @@ using log4net;
 namespace EBTWeather.Avalonia.Misc;
 
 /// <summary>
-/// In-memory user preferences which are loaded from a file, and saved to the file before shutdown.
-/// TODO: Should build upon this: https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration#configuration-providers
+/// In-memory user preferences which are loaded from a file on app startup, and saved to the file before shutdown.
 /// </summary>
 public static class Settings
 {
     private static readonly ILog Log = LogManager.GetLogger(typeof(Settings));
 
-    public static Units Units { get; set; } = Units.Metric;
+    public static Units Units
+    {
+        get => _persistedSettings.Units;
+        set => _persistedSettings.Units = value;
+    }
 
-    public static ScreenMode ScreenMode { get; set; } = ScreenMode.System;
+    public static ScreenMode ScreenMode
+    {
+        get => _persistedSettings.ScreenMode;
+        set => _persistedSettings.ScreenMode = value;
+    }
 
-    public static bool AcceptedLicenseTerms { get; set; }
+    public static bool AcceptedLicenseTerms
+    {
+        get => _persistedSettings.AcceptedLicenseTerms;
+        set => _persistedSettings.AcceptedLicenseTerms = value;
+    }
 
-    public static DateTimeOffset LastAutomaticCheckForUpdates { get; set; } = DateTimeOffset.MinValue;
+    public static DateTimeOffset LastAutomaticCheckForUpdates
+    {
+        get => _persistedSettings.LastAutomaticCheckForUpdates;
+        set => _persistedSettings.LastAutomaticCheckForUpdates = value;
+    }
 
-    public static bool AutomaticallyCheckForUpdates { get; set; } = true;
+    public static bool AutomaticallyCheckForUpdates
+    {
+        get => _persistedSettings.AutomaticallyCheckForUpdates;
+        set => _persistedSettings.AutomaticallyCheckForUpdates = value;
+    }
 
-    public static Dictionary<string, LocationData> Locations  { get; set; } = new();
-    
-    public static string CountryCode { get; set; } = string.Empty;
-    
-    public static bool SpecifyCountryCode {  get; set; }
+    public static Dictionary<string, LocationData> Locations
+    {
+        get => _persistedSettings.Locations;
+        set => _persistedSettings.Locations = value;
+    }
 
-    public static int CurrentLocationIndex { get; set; }
+    public static string CountryCode
+    {
+        get => _persistedSettings.CountryCode;
+        set => _persistedSettings.CountryCode = value;
+    }
 
+    public static bool SpecifyCountryCode
+    {
+        get => _persistedSettings.SpecifyCountryCode;
+        set => _persistedSettings.SpecifyCountryCode = value;
+    }
+
+    public static int CurrentLocationIndex
+    {
+        get => _persistedSettings.CurrentLocationIndex;
+        set => _persistedSettings.CurrentLocationIndex = value;
+    }
+
+    /// <summary>
+    /// Return sorted list of locations
+    /// </summary>
     public static LocationsData LocationsData
     {
         get
@@ -68,6 +106,11 @@ public static class Settings
         }
     }
 
+    /// <summary>
+    /// Return index of a given location 
+    /// </summary>
+    /// <param name="locationId"></param>
+    /// <returns>index or -1 if not found</returns>
     public static int LocationIndexFromId(string locationId)
     {
         return LocationsData.Locations.FindIndex(location => location.Id == locationId);
@@ -77,28 +120,30 @@ public static class Settings
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "EBT Weather");
 
-    private static readonly string SettingsPath = Path.Combine(SettingsFolder,  "settings.json");
+    private static readonly string SettingsPath = Path.Combine(SettingsFolder, "settings.json");
 
     private class PersistedSettings
     {
-        public Units Units { get; set; }
+        public Units Units { get; set; } = Units.Metric;
 
-        public ScreenMode ScreenMode { get; set; }
+        public ScreenMode ScreenMode { get; set; } = ScreenMode.System;
 
         public bool AcceptedLicenseTerms { get; set; }
 
-        public DateTimeOffset LastAutomaticCheckForUpdates { get; set; }
+        public DateTimeOffset LastAutomaticCheckForUpdates { get; set; } = DateTimeOffset.MinValue;
 
         public bool AutomaticallyCheckForUpdates { get; set; } = true;
 
-        public Dictionary<string, LocationData> Locations  { get; set; }
+        public Dictionary<string, LocationData> Locations { get; set; } = new();
     
         public string CountryCode { get; set; } = string.Empty;
     
         public bool SpecifyCountryCode {  get; set; }
 
-        public int CurrentLocationIndex { get; set; }
+        public int CurrentLocationIndex { get; set; } = -1;
     }
+    
+    private static PersistedSettings _persistedSettings = new();
 
     public static void Load()
     {
@@ -110,17 +155,7 @@ public static class Settings
             {
                 var json = File.ReadAllText(SettingsPath);
 
-                var persistedSettings = JsonSerializer.Deserialize<PersistedSettings>(json) ?? new PersistedSettings();
-
-                Units = persistedSettings.Units;
-                ScreenMode = persistedSettings.ScreenMode;
-                AcceptedLicenseTerms = persistedSettings.AcceptedLicenseTerms;
-                LastAutomaticCheckForUpdates = persistedSettings.LastAutomaticCheckForUpdates;
-                AutomaticallyCheckForUpdates = persistedSettings.AutomaticallyCheckForUpdates;
-                Locations = persistedSettings.Locations;
-                CountryCode = persistedSettings.CountryCode;
-                SpecifyCountryCode = persistedSettings.SpecifyCountryCode;
-                CurrentLocationIndex = persistedSettings.CurrentLocationIndex;
+                _persistedSettings = JsonSerializer.Deserialize<PersistedSettings>(json) ?? new PersistedSettings();
             }
             catch (Exception ex)
             {
@@ -133,20 +168,7 @@ public static class Settings
     {
         Log.Info($"Save to: \"{SettingsPath}\"");
         
-        var persistedSettings = new PersistedSettings
-        {
-            Units = Units,
-            ScreenMode = ScreenMode,
-            AcceptedLicenseTerms = AcceptedLicenseTerms,
-            LastAutomaticCheckForUpdates = LastAutomaticCheckForUpdates,
-            AutomaticallyCheckForUpdates = AutomaticallyCheckForUpdates,
-            Locations = Locations,
-            CountryCode = CountryCode,
-            SpecifyCountryCode = SpecifyCountryCode,
-            CurrentLocationIndex = CurrentLocationIndex,
-        };
-        
-        var json = JsonSerializer.Serialize(persistedSettings, new JsonSerializerOptions
+        var json = JsonSerializer.Serialize(_persistedSettings, new JsonSerializerOptions
         {
             WriteIndented = true
         });
