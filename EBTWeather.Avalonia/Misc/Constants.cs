@@ -48,4 +48,6 @@ public class Constants
     public const string AppName = "EBT Weather";
 
     public static TimeSpan CheckForUpdatesInterval = TimeSpan.FromDays(7);
+
+    public const string MinimizeArg = "--minimize";
 }

@@ -60,7 +60,10 @@ public class AppVersionTests
     {
         var latestVersion = await _appVersion.GetLatestVersion(_httpClientFactory);
         
-        Assert.That(latestVersion.Major, Is.EqualTo(1));
-        Assert.That(latestVersion.Minor, Is.EqualTo(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(latestVersion!.Major, Is.EqualTo(1));
+            Assert.That(latestVersion.Minor, Is.EqualTo(0));
+        });
     }
 }

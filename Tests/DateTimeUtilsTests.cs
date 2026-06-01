@@ -49,6 +49,7 @@ public class DateTimeUtilsTests
         Assert.That(result, Is.True);
         
         result = DateTimeUtils.IsToday(DateTime.Now.AddDays(1));
+        
         Assert.That(result, Is.False);
     }
 }

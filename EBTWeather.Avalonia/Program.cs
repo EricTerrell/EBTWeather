@@ -38,7 +38,7 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+        var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
         XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
         Log.Info("App Launched");

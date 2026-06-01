@@ -130,14 +130,12 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     {
         var result = ValidationResult.Success;
 
-        if (context.ObjectInstance is ManageLocationsDialogViewModel manageLocationsDialogViewModel)
+        if (context.ObjectInstance is ManageLocationsDialogViewModel { SpecifyCountryCode: true } 
+                manageLocationsDialogViewModel)
         {
-            if (manageLocationsDialogViewModel.SpecifyCountryCode)
+            if (string.IsNullOrWhiteSpace(manageLocationsDialogViewModel.SearchCountryCode))
             {
-                if (string.IsNullOrWhiteSpace(manageLocationsDialogViewModel.SearchCountryCode))
-                {
-                    result = new ValidationResult("Country code is required");
-                }
+                result = new ValidationResult("Country code is required");
             }
         }
 
@@ -414,7 +412,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     [RelayCommand]
     private async Task ChangeUnits(Window window)
     {
-        await new SettingsDialog().Launch(window);
+        await new SettingsDialog().LaunchAsync(window);
 
         UpdateSuffix();
     }

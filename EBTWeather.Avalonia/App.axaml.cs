@@ -69,23 +69,21 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Should the app launch minimized?
-            var minimized = desktop.Args!.ToList().FindIndex(0, arg => arg == "--minimize") != -1;
+            var minimize = desktop.Args!.ToList().FindIndex(0, arg => 
+                arg.Trim().Equals(Constants.MinimizeArg, StringComparison.CurrentCultureIgnoreCase)) != -1;
 
             desktop.MainWindow = new MainWindow
             {
                 DataContext = _mainWindowViewModel,
-                WindowState = minimized ? WindowState.Minimized : WindowState.Normal
+                WindowState = minimize ? WindowState.Minimized : WindowState.Normal
             };
 
-            desktop.Startup += (sender, args) => OnStartup();
-            desktop.Exit += (sender, args) => OnShutdown();
+            desktop.Startup += (_, _) => OnStartup();
+            desktop.Exit += (_, _) => OnShutdown();
 
             if (!Settings.AcceptedLicenseTerms)
-            {
-                Dispatcher.UIThread.Post(async () =>
-                {
-                    await new LicenseTermsDialog().Launch(desktop.MainWindow);                    
-                });
+            { 
+                new LicenseTermsDialog().LaunchSync(desktop.MainWindow);
             }
         }
 
@@ -96,7 +94,7 @@ public partial class App : Application
     {
         Log.Info("OnStartup");
 
-        _mainWindowViewModel.StartTimer();
+        Task.Run(() => _mainWindowViewModel.StartTimer()).GetAwaiter().GetResult();
     }
 
     private void OnShutdown()
@@ -155,8 +153,7 @@ public partial class App : Application
     
     private TimeSpan[] CreateWaits(int retries, int retryTimeout)
     {
-        var result = Enumerable.Range(1, retries).Select(item => 
-            TimeSpan.FromSeconds(retryTimeout)).ToArray();
+        var result = Enumerable.Range(1, retries).Select(_ => TimeSpan.FromSeconds(retryTimeout)).ToArray();
         
         var totalSeconds =  result.Sum(item => item.TotalSeconds);
         

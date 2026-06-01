@@ -31,8 +31,9 @@ public class ConverterUtilsTests
     [Test]
     public void TestAngleConverter()
     {
-        var angle = 185;
+        const int angle = 185;
         var conversion = new AngleConverter().Convert(angle, typeof(string), null, new CultureInfo("en-US"));
+        
         Assert.That(conversion, Is.EqualTo("S"));
     }
 }

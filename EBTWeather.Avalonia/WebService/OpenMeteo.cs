@@ -152,7 +152,7 @@ public class OpenMeteo
 
         if (cache.TryGetValue(key, out var weatherInfo))
         {
-            return weatherInfo as WeatherInfo;            
+            return (weatherInfo as WeatherInfo)!;            
         }
         else
         {
@@ -228,12 +228,12 @@ public class OpenMeteo
             new Temperature(responseObject.daily.temperature_2m_max[i]), 
             responseObject.daily.sunrise[i], 
             responseObject.daily.sunset[i], 
-            responseObject.daily.uv_index_max[i] ?? Double.NaN, 
+            responseObject.daily.uv_index_max[i] ?? double.NaN, 
             new Pressure(responseObject.daily.pressure_msl_mean[i]),
             responseObject.daily.relative_humidity_2m_mean[i],
             new Temperature(responseObject.daily.dew_point_2m_mean[i]),
             responseObject.daily.cloud_cover_mean[i],
-            new Visibility(responseObject.daily.visibility_mean[i] ?? Double.NaN),
+            new Visibility(responseObject.daily.visibility_mean[i] ?? double.NaN),
             new Precipitation(responseObject.daily.precipitation_sum[i]), 
             responseObject.daily.precipitation_probability_max[i], 
             new Speed(responseObject.daily.wind_gusts_10m_max[i]),
@@ -337,7 +337,7 @@ public class OpenMeteo
 
         if (cache.TryGetValue(key, out var historicalWeatherInfo))
         {
-            return historicalWeatherInfo as HistoricalWeatherInfo;
+            return (historicalWeatherInfo as HistoricalWeatherInfo)!;
         }
         else
         {
@@ -364,11 +364,6 @@ public class OpenMeteo
     {
         Log.Info($"***** GetHistoricalWeather ***** location: {locationData.Name} startDate: {startDate} endDate: {endDate}");
 
-        if (locationData is null)
-        {
-            return null;    
-        }
-        
         var startDateDateOnly = DateOnly.FromDateTime(startDate.ToDateTime(TimeOnly.MinValue));
         var endDateDateOnly = DateOnly.FromDateTime(endDate.ToDateTime(TimeOnly.MinValue));
         var nowDateOnly = DateOnly.FromDateTime(DateTime.Now);
@@ -481,18 +476,11 @@ public class OpenMeteo
         var result = string.Empty;
 
         // We consider a change of >= 2 hPa in about an hour to be significant.
-        bool significantChange = Math.Abs(current - oneHourInTheFuture) >= 2.0;
+        var significantChange = Math.Abs(current - oneHourInTheFuture) >= 2.0;
 
         if (significantChange)
         {
-            if (oneHourInTheFuture > current)
-            {
-                result = "↑";
-            }
-            else
-            {
-                result = "↓";
-            }
+            result = oneHourInTheFuture > current ? "↑" : "↓";
         }
 
         return result;

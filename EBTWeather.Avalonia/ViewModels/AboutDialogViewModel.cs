@@ -46,12 +46,12 @@ public partial class AboutDialogViewModel : ViewModelBase
     [RelayCommand]
     private async Task ReadLicenseTerms(Window window)
     {
-        await new LicenseTermsDialog().Launch(window);
+        await new LicenseTermsDialog().LaunchAsync(window);
     }
 
     [RelayCommand]
     private async Task CheckForUpdates(Window window)
     {
-        await new CheckForUpdatesDialog().Launch(window);
+        await new CheckForUpdatesDialog().LaunchAsync(window);
     }
 }

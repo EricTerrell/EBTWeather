@@ -61,12 +61,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
         // Display information about menu items as each one is highlighted
         WeakReferenceMessenger.Default.Register<MainWindowViewModel, MenuMessage>
-        (this, (vm, msg) => { ProcessMenuMessage(msg.MenuName, msg.Selected); }
+        (this, (_, msg) => { ProcessMenuMessage(msg.MenuName, msg.Selected); }
         );
         
         // We may need to launch the ManageLocationsDialog after the LicenseTermsDialog is closed.
         WeakReferenceMessenger.Default.Register<MainWindowViewModel, ClosedLicenseTermsDialog>
-        (this, (vm, msg) => { ProcessClosedLicenseTermsDialog(); }
+        (this, (_, _) => { ProcessClosedLicenseTermsDialog(); }
         );
     }
 
@@ -97,7 +97,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<LocationData> LocationData { get; set; }
 
-    [ObservableProperty] private int? _currentLocationIndex = Settings.CurrentLocationIndex;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    private int? _currentLocationIndex = Settings.CurrentLocationIndex;
 
     [ObservableProperty]
     private DateTime _historicalMinDate = new(1950, 1, 1);
@@ -137,12 +139,12 @@ public partial class MainWindowViewModel : ViewModelBase
         CurrentAndFutureWeather = null;
         HistoricalWeather = null;
 
-        UpdateWeatherData();
+        Task.Run(async () => { await UpdateWeatherData(); });
     }
 
     [ObservableProperty] private string _statusMessage;
 
-    [ObservableProperty] private WeatherInfo? _CurrentAndFutureWeather;
+    [ObservableProperty] private WeatherInfo? _currentAndFutureWeather;
 
     [ObservableProperty] private HistoricalWeatherInfo? _historicalWeather;
 
@@ -151,7 +153,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LaunchSettingsDialog(Window window)
     {
-        await new SettingsDialog().Launch(window);
+        await new SettingsDialog().LaunchAsync(window);
 
         UpdateSuffixes();
 
@@ -164,19 +166,19 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task LaunchLicenseTermsDialog(Window window)
     {
-        await new LicenseTermsDialog().Launch(window);
+        await new LicenseTermsDialog().LaunchAsync(window);
     }
 
     [RelayCommand]
     private async Task LaunchAboutDialog(Window window)
     {
-        await new AboutDialog().Launch(window);
+        await new AboutDialog().LaunchAsync(window);
     }
 
     [RelayCommand]
     public async Task LaunchManageLocationsDialog(Window window)
     {
-        await new ManageLocationsDialog().Launch(window);
+        await new ManageLocationsDialog().LaunchAsync(window);
 
         RefreshLocationsData();
     }
@@ -214,7 +216,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Interval = TimeSpan.FromMilliseconds(TimerInterval)
         };
 
-        _timer.Tick += async (sender, o) =>
+        _timer.Tick += async (_, _) =>
         {
             Log.Info("timer tick");
 
@@ -344,13 +346,18 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task HelpCheckForUpdates(Window window)
     {
-        await new CheckForUpdatesDialog().Launch(window);
+        await new CheckForUpdatesDialog().LaunchAsync(window);
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanRefresh))]
     private async Task Refresh()
     {
-        UpdateWeatherData();
+        await Task.Run(async () => await UpdateWeatherData());
+    }
+
+    private bool CanRefresh()
+    {
+        return CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count;
     }
     
     /// <summary>
@@ -377,9 +384,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (Settings.Locations.Count == 0)
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                LaunchManageLocationsDialog(ApplicationUtils.GetMainWindow()!);
+                await LaunchManageLocationsDialog(ApplicationUtils.GetMainWindow()!);
             });
         }
     }

@@ -21,6 +21,7 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,12 +29,27 @@ namespace EBTWeather.Avalonia.Views;
 
 public class CustomDialog<TViewModel> : Window where TViewModel : ObservableObject
 {
-    public virtual async Task Launch(Window window)
+    private void PrepareForLaunch()
     {
         DataContext = (Application.Current as App)!.ServiceProvider.GetRequiredService<TViewModel>();
 
         Focus();
+    }
+    
+    public virtual async Task LaunchAsync(Window window)
+    {
+        PrepareForLaunch();
         
         await ShowDialog<bool>(window);
+    }
+
+    public virtual void LaunchSync(Window window)
+    {
+        PrepareForLaunch();
+        
+        Dispatcher.UIThread.Post(() =>
+        {
+            ShowDialog<bool>(window);
+        });
     }
 }
