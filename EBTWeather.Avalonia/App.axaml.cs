@@ -100,8 +100,6 @@ public partial class App : Application
     private void OnShutdown()
     {
         Log.Info("OnShutdown");
-        
-        Settings.Save();    
     }
 
     private static void AddServices(IServiceCollection services)

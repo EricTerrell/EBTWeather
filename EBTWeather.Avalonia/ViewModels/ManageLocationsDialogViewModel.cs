@@ -213,6 +213,8 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         {
             Settings.CurrentLocationIndex = Settings.LocationIndexFromId(selectedLocationId);
         }
+        
+        Settings.Save();
     }
 
     [RelayCommand]
@@ -263,6 +265,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
             };
 
             await editLocationDialog.ShowDialog(window!);
+            Settings.Save();
             
             ReloadLocations();
         }
@@ -354,7 +357,8 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
         }
         
         Settings.CurrentLocationIndex = Settings.LocationIndexFromId(location.Id);
-
+        Settings.Save();
+        
         ReloadLocations();
     }
 

@@ -38,55 +38,55 @@ public static class Settings
     public static Units Units
     {
         get => _persistedSettings.Units;
-        set => _persistedSettings.Units = value;
+        set { _persistedSettings.Units = value; Save(); }
     }
 
     public static ScreenMode ScreenMode
     {
         get => _persistedSettings.ScreenMode;
-        set => _persistedSettings.ScreenMode = value;
+        set { _persistedSettings.ScreenMode = value; Save(); }
     }
 
     public static bool AcceptedLicenseTerms
     {
         get => _persistedSettings.AcceptedLicenseTerms;
-        set => _persistedSettings.AcceptedLicenseTerms = value;
+        set { _persistedSettings.AcceptedLicenseTerms = value; Save(); }
     }
 
     public static DateTimeOffset LastAutomaticCheckForUpdates
     {
         get => _persistedSettings.LastAutomaticCheckForUpdates;
-        set => _persistedSettings.LastAutomaticCheckForUpdates = value;
+        set { _persistedSettings.LastAutomaticCheckForUpdates = value; Save(); }
     }
 
     public static bool AutomaticallyCheckForUpdates
     {
         get => _persistedSettings.AutomaticallyCheckForUpdates;
-        set => _persistedSettings.AutomaticallyCheckForUpdates = value;
+        set { _persistedSettings.AutomaticallyCheckForUpdates = value; Save(); }
     }
 
     public static Dictionary<string, LocationData> Locations
     {
         get => _persistedSettings.Locations;
-        set => _persistedSettings.Locations = value;
+        set { _persistedSettings.Locations = value; Save(); }
     }
 
     public static string CountryCode
     {
         get => _persistedSettings.CountryCode;
-        set => _persistedSettings.CountryCode = value;
+        set { _persistedSettings.CountryCode = value; Save(); }
     }
 
     public static bool SpecifyCountryCode
     {
         get => _persistedSettings.SpecifyCountryCode;
-        set => _persistedSettings.SpecifyCountryCode = value;
+        set { _persistedSettings.SpecifyCountryCode = value; Save(); }
     }
 
     public static int CurrentLocationIndex
     {
         get => _persistedSettings.CurrentLocationIndex;
-        set => _persistedSettings.CurrentLocationIndex = value;
+        set { _persistedSettings.CurrentLocationIndex = value; Save(); }
     }
 
     /// <summary>
