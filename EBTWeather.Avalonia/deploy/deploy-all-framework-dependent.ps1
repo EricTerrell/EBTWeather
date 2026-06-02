@@ -21,7 +21,10 @@
 c:
 cd "~\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\deploy"
 
-.\deploy-linux-framework-dependent.ps1
+.\deploy-linux-framework-dependent-x64.ps1
+
+.\deploy-linux-framework-dependent-arm64.ps1
+
 .\deploy-windows-framework-dependent.ps1
 
 Write-Output ""

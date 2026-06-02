@@ -11,7 +11,7 @@ With EBT Weather, displaying historical weather data is as easy as accessing cur
 
 EBT Weather displays weather data from a list of your locations. Search for locations, or specify an exact location, down to the arc second.
 
-EBT Weather is available for Windows and Linux. And of course, EBT Weather is open source!
+EBT Weather is available for Windows (Intel/AMD 64-bit) and Linux (Intel/AMD 64-bit, ARM 64-bit). And of course, EBT Weather is open source!
 
 EBT Weather is built on the [`Avalonia`](https://avaloniaui.net/) framework. EBT Weather requires the [`.NET Desktop
 Runtime 10`](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).

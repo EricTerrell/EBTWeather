@@ -23,11 +23,21 @@ Push-Location
 c:
 cd "~\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia"
 
-if (Test-Path ".\bin\Release\net10.0\win-x64")
+if (Test-Path ".\bin\Release\net10.0\linux-x64")
 {
-    Remove-Item ".\bin\Release\net10.0\win-x64" -Recurse -Force
+    Remove-Item ".\bin\Release\net10.0\linux-x64" -Recurse -Force
 }
 
-dotnet publish -c Release --os win --self-contained false -f net10.0 --arch x64
+dotnet publish -c Release --os linux --self-contained false -f net10.0 --arch x64
+
+copy ".\Assets\app_icon.png" ".\bin\Release\net10.0\linux-x64\publish"
+copy ".\log4net.config.linux" ".\bin\Release\net10.0\linux-x64\publish\log4net.config"
+
+if (!(Test-Path "C:\temp\EBTWeather"))
+{
+    New-Item -Path "C:\temp\EBTWeather" -ItemType Directory
+}
+
+Compress-Archive -Path ".\bin\Release\net10.0\linux-x64\publish\*" -DestinationPath "C:\temp\EBTWeather\EBTWeather-linux-x64.zip" -Force
 
 Pop-Location
