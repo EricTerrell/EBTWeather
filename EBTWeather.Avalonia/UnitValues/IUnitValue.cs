@@ -24,7 +24,7 @@ public interface IUnitValue
 {
     public double MetricValue { get; }
     
-    public static string MetricSuffix { get; }
+    public static abstract string MetricSuffix { get; }
     
-    public static string EnglishSuffix { get; }
+    public static abstract string UsaSuffix { get; }
 }

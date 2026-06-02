@@ -51,5 +51,5 @@ public class Temperature : IUnitValue
 
     public static string MetricSuffix => DegreeSymbol;
 
-    public static string USASuffix => DegreeSymbol;
+    public static string UsaSuffix => DegreeSymbol;
 }

@@ -42,5 +42,5 @@ public class Speed : IUnitValue
 
     public static string MetricSuffix => " km/h";
 
-    public static string USASuffix => " mph";
+    public static string UsaSuffix => " mph";
 }

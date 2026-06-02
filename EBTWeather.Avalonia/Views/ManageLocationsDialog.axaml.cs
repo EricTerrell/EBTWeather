@@ -41,7 +41,7 @@ public partial class ManageLocationsDialog : CustomDialog<ManageLocationsDialogV
         
         // Display information about menu items as each one is highlighted
         WeakReferenceMessenger.Default.Register<ManageLocationsDialog, ToastMessage>
-        (this, (vm, msg) => { ShowToast(msg.ToastText); }
+        (this, (_, msg) => { ShowToast(msg.ToastText); }
         );
     }
 

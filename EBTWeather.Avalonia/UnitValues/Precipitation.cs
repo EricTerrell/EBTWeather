@@ -42,5 +42,5 @@ public class Precipitation : IUnitValue
 
     public static string MetricSuffix => " mm";
 
-    public static string USASuffix => " in";
+    public static string UsaSuffix => " in";
 }

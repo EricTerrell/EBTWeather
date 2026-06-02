@@ -42,5 +42,5 @@ public class Visibility : IUnitValue
 
     public static string MetricSuffix => " km";
 
-    public static string USASuffix => " mi";
+    public static string UsaSuffix => " mi";
 }

@@ -42,5 +42,5 @@ public class ShortDistance : IUnitValue
 
     public static string MetricSuffix => " m";
 
-    public static string USASuffix => " ft";
+    public static string UsaSuffix => " ft";
 }

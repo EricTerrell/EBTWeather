@@ -57,7 +57,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
 
     private void UpdateSuffix()
     {
-        ElevationSuffix = (Settings.Units == Units.USA ? ShortDistance.USASuffix : ShortDistance.MetricSuffix).Trim();
+        ElevationSuffix = (Settings.Units == Units.USA ? ShortDistance.UsaSuffix : ShortDistance.MetricSuffix).Trim();
     }
 
     private const int MinElevation = -1500;
@@ -297,7 +297,7 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     [ObservableProperty] private string _elevationSuffix;
 
     public string ShortDistanceSuffix =>
-        Settings.Units == Units.Metric ? ShortDistance.MetricSuffix : ShortDistance.USASuffix;
+        Settings.Units == Units.Metric ? ShortDistance.MetricSuffix : ShortDistance.UsaSuffix;
 
     [ObservableProperty] private string _errorMessage;
 

@@ -316,7 +316,7 @@ public class OpenMeteo
         
         return new WeatherInfo(
             location,
-            DateTime.Parse(responseObject.current.time),
+            DateTime.Parse(responseObject.current.time, CultureInfo.InvariantCulture),
             [..todayAndTomorrowWeatherInfo],
             hourlyWeatherInfoForRestOfTodayAndTomorrow,
             dailyWeatherInfo,
@@ -517,7 +517,7 @@ public class OpenMeteo
             Log.Info($"GetGeoLocations: returning list of {responseObject.results.Length} items");
 
             return new LocationsData(responseObject.results.Select(locationInfo => new LocationData(
-                    locationInfo.id.ToString(),
+                    locationInfo.id.ToString(CultureInfo.InvariantCulture),
                     locationInfo.name,
                     new GeoLocation(locationInfo.latitude, locationInfo.longitude,
                         new ShortDistance(locationInfo.elevation)),

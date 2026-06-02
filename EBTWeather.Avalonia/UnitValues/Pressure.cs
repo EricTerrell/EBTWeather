@@ -42,5 +42,5 @@ public class Pressure : IUnitValue
     
     public static string MetricSuffix => " hPa";
 
-    public static string USASuffix => " in";
+    public static string UsaSuffix => " in";
 }

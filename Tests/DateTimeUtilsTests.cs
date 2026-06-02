@@ -32,10 +32,10 @@ public class DateTimeUtilsTests
     public void TestToUtcMountainTime()
     {
         const string midnightText = "2026-05-12T00:00";
-        var midnight = DateTime.Parse(midnightText);
+        var midnight = DateTime.Parse(midnightText, CultureInfo.InvariantCulture);
         
         var localTime = DateTimeUtils.ToUtc(midnight, "America/Denver");
-        var localTimeText = localTime.ToString(CultureInfo.InstalledUICulture);
+        var localTimeText = localTime.ToString(CultureInfo.InvariantCulture);
         
         Assert.That(localTimeText, Is.EqualTo("5/12/2026 6:00:00 AM"));
     }

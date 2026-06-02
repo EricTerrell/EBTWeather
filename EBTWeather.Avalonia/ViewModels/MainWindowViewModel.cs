@@ -308,15 +308,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void UpdateSuffixes()
     {
-        TemperatureSuffix = Settings.Units == Units.Metric ? Temperature.MetricSuffix : Temperature.USASuffix;
+        TemperatureSuffix = Settings.Units == Units.Metric ? Temperature.MetricSuffix : Temperature.UsaSuffix;
 
-        SpeedSuffix = Settings.Units == Units.Metric ? Speed.MetricSuffix : Speed.USASuffix;
+        SpeedSuffix = Settings.Units == Units.Metric ? Speed.MetricSuffix : Speed.UsaSuffix;
 
-        AirPressureSuffix = Settings.Units == Units.Metric ? Pressure.MetricSuffix : Pressure.USASuffix;
+        AirPressureSuffix = Settings.Units == Units.Metric ? Pressure.MetricSuffix : Pressure.UsaSuffix;
 
-        VisibilitySuffix = Settings.Units == Units.Metric ? Visibility.MetricSuffix : Visibility.USASuffix;
+        VisibilitySuffix = Settings.Units == Units.Metric ? Visibility.MetricSuffix : Visibility.UsaSuffix;
 
-        PrecipitationSuffix = Settings.Units == Units.Metric ? Precipitation.MetricSuffix : Precipitation.USASuffix;
+        PrecipitationSuffix = Settings.Units == Units.Metric ? Precipitation.MetricSuffix : Precipitation.UsaSuffix;
     }
 
     [RelayCommand]
