@@ -1,6 +1,6 @@
 # EBT Weather for Windows and Linux
 
-EBT Weather delivers current and historical weather directly to your desktop computer:
+EBT Weather delivers current weather, predictions, and historical weather directly to your desktop computer:
 
 * Current Weather
 * Hourly Predictions
