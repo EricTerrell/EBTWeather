@@ -41,7 +41,7 @@ public class Constants
     
     public const string MainWebsiteUrl = "https://www.EricBT.com";
     public const string CodeDownloadUrl = "/versions/EBTWeather";
-    public const string DownloadUpdatesUrl = "https://www.EricBT.com/EBTWeather/download";
+    public const string DownloadUpdatesUrl = "https://www.EricBT.com/ebt_weather/download";
     
     public const string SupportEmail = "EBTWeather@EricBT.com";
 
