@@ -20,6 +20,7 @@
 
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -32,6 +33,8 @@ using EBTWeather.Avalonia.Views;
 using log4net;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using Polly.Extensions.Http;
+using Polly.Timeout;
 
 namespace EBTWeather.Avalonia;
 
@@ -110,59 +113,65 @@ public partial class App : Application
         });
     }
 
+    private IAsyncPolicy<HttpResponseMessage> CreateRetryPolicy(int retries, TimeSpan sleepDuration)
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .Or<TimeoutRejectedException>() // thrown by Polly's TimeoutPolicy if the inner call times out
+            .WaitAndRetryAsync(
+                retryCount: retries,
+                sleepDurationProvider: retryAttempt => sleepDuration,
+                onRetry: (exception, timeSpan, retryCount, context) =>
+                {
+                    Log.Warn($"Retry {retryCount} after {timeSpan.TotalSeconds} seconds due to: {exception.Exception.Message}");
+                });
+    }
+
+    private IAsyncPolicy<HttpResponseMessage> CreatePerTryTimeoutPolicy(int eachTryTimeoutSeconds)
+    {
+        return Policy.TimeoutAsync<HttpResponseMessage>(eachTryTimeoutSeconds);
+    }
+
+    /// <summary>
+    /// Add pre-configured HttpClients that can be used by the app.
+    /// Note: The global HttpClient.Timeout value is not specified. If you set the global HttpClient.Timeout to a value
+    /// that is shorter than your Polly retry delays, the request will be canceled globally before Polly has a chance to
+    /// retry.
+    /// https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory
+    /// </summary>
+    /// <param name="services"></param>
     private void AddHttpClients(IServiceCollection services)
     {
-        const int defaultRetries = 1;
-        var defaultTimeout = TimeSpan.FromSeconds(30);
-        const int retryTimeout = 60;
-
+        const int eachTryTimeoutSeconds = 15;
+        var sleepTime = TimeSpan.FromSeconds(1);
+        
         services.AddHttpClient(Constants.OpenMeteoForecastClientName, client =>
             {
                 client.BaseAddress = new Uri("https://api.open-meteo.com");
-                client.Timeout = defaultTimeout;
             })
-            .AddTransientHttpErrorPolicy(builder => 
-                builder.WaitAndRetryAsync(CreateWaits(defaultRetries, retryTimeout)));
+            .AddPolicyHandler(CreateRetryPolicy(4, sleepTime))
+            .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));
 
         services.AddHttpClient(Constants.OpenMeteoHistoricalClientName, client =>
             {
                 client.BaseAddress = new Uri("https://archive-api.open-meteo.com");
-                client.Timeout = defaultTimeout;
             })
-            .AddTransientHttpErrorPolicy(builder => 
-                builder.WaitAndRetryAsync(CreateWaits(defaultRetries, retryTimeout)));
+            .AddPolicyHandler(CreateRetryPolicy(4, sleepTime))
+            .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));
 
         services.AddHttpClient(Constants.OpenMeteoGeoCodingClientName, client =>
             {
                 client.BaseAddress = new Uri("https://geocoding-api.open-meteo.com");
-                client.Timeout = defaultTimeout;
             })
-            .AddTransientHttpErrorPolicy(builder => 
-                builder.WaitAndRetryAsync(CreateWaits(defaultRetries, retryTimeout)));
+            .AddPolicyHandler(CreateRetryPolicy(2, sleepTime))
+            .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));
 
         services.AddHttpClient(Constants.MainWebsiteClientName, client =>
             {
                 client.BaseAddress = new Uri(Constants.MainWebsiteUrl);
-                client.Timeout = defaultTimeout;
             })
-            .AddTransientHttpErrorPolicy(builder => 
-                builder.WaitAndRetryAsync(CreateWaits(defaultRetries, retryTimeout)));
-    }
-    
-    private TimeSpan[] CreateWaits(int retries, int retryTimeout)
-    {
-        var result = Enumerable.Range(1, retries).Select(_ => TimeSpan.FromSeconds(retryTimeout)).ToArray();
-        
-        var totalSeconds =  result.Sum(item => item.TotalSeconds);
-        
-        Log.Info($"\r\nApp.CreateWaits: retries: {retries} Total Seconds: {totalSeconds}");
-
-        result.ToList().ForEach(wait =>
-        {
-            Log.Info($"App.CreateWaits: Wait: {wait}\r\n");
-        });
-        
-        return result.ToArray();
+            .AddPolicyHandler(CreateRetryPolicy(5, sleepTime))
+            .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));
     }
     
     private static void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

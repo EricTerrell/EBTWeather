@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EBT Weather"
-#define MyAppVersion "1.00"
+#define MyAppVersion "1.01"
 #define MyAppPublisher "Eric Bergman-Terrell"
 #define MyAppURL "https://www.EricBT.com/"
 #define MyAppExeName "EBTWeather.exe"

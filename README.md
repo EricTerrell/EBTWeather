@@ -46,6 +46,13 @@ Add Exact Location:
 A `--minimize` argument specified when the app is launched will launch the app minimized. Otherwise it will launch
 with normal main window.
 
+# Versions
+
+| Version | Description                                                                                   |
+|---------|-----------------------------------------------------------------------------------------------|
+| 1.01    | Fixed retry logic for HTTP requests. Now log HTTP request duration even if the request fails. |
+| 1.00    | Initial release                                                                               |
+
 # Links
 
 * [`website`](https://www.ericbt.com/ebt_weather)

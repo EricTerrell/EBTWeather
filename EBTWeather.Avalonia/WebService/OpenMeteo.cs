@@ -172,155 +172,167 @@ public class OpenMeteo
         Log.Info(requestUri);
         
         var startTime = DateTime.Now;
-        
-        using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoForecastClientName);
-        using var response = await client.GetAsync(requestUri);
 
-        var duration = DateTime.Now - startTime;
-        Log.Info($"GetCurrentWeather: web service call duration: {duration}");
-        
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-
-        var responseObject = JsonSerializer.Deserialize<WeatherResponse>(jsonResponse);
-        
-        var location = new GeoLocation(
-            responseObject!.latitude, responseObject.longitude, new ShortDistance(responseObject.elevation));
-
-        var hourlyWeatherInfo = responseObject.hourly.time.Select((dateTime, i) => 
-            new HourlyWeatherInfo(
-                DateTimeUtils.ToUtc(dateTime, responseObject.timezone),
-                new Temperature(responseObject.hourly.temperature_2m[i]), 
-                new Temperature(responseObject.hourly.apparent_temperature[i]), 
-                new Temperature(responseObject.hourly.dew_point_2m[i]), 
-                new Speed(responseObject.hourly.wind_speed_10m[i]), 
-                responseObject.hourly.wind_direction_10m[i], 
-                new Speed(responseObject.hourly.wind_gusts_10m[i]), 
-                responseObject.hourly.relative_humidity_2m[i],
-                new Pressure(responseObject.hourly.pressure_msl[i]),
-                new Precipitation(responseObject.hourly.precipitation[i]),
-                responseObject.hourly.precipitation_probability[i], 
-                responseObject.hourly.weather_code[i],
-                _decodeWeatherCode[responseObject.hourly.weather_code[i]].Description,
-                new Visibility(responseObject.hourly.visibility[i]),
-                responseObject.hourly.cloud_cover[i])
-        ).ToList();
-        
-        hourlyWeatherInfo.Sort();
-
-        var now = DateTime.Now.ToUniversalTime();
-        
-        var todayStart = DateTime.SpecifyKind(
-            new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0), DateTimeKind.Utc);
-        
-        var hourlyWeatherForRestOfTodayAndFuture = 
-            hourlyWeatherInfo.Where(item => item.DateTime >= todayStart).ToList();
-
-        var hoursUntilMidnightTomorrow = 48 - DateTime.Now.Hour;
-        
-        var hourlyWeatherInfoForRestOfTodayAndTomorrow = 
-            hourlyWeatherForRestOfTodayAndFuture[..hoursUntilMidnightTomorrow];
-        
-        var dictionary = responseObject.current.is_day != 0 ? _decodeWeatherCode : _decodeWeatherCodeNight;
-
-        var dailyWeatherInfo = responseObject.daily.time.Select((date, i) => new DailyWeatherInfo(
-            date,
-            new Temperature(responseObject.daily.temperature_2m_min[i]), 
-            new Temperature(responseObject.daily.temperature_2m_max[i]), 
-            responseObject.daily.sunrise[i], 
-            responseObject.daily.sunset[i], 
-            responseObject.daily.uv_index_max[i] ?? double.NaN, 
-            new Pressure(responseObject.daily.pressure_msl_mean[i]),
-            responseObject.daily.relative_humidity_2m_mean[i],
-            new Temperature(responseObject.daily.dew_point_2m_mean[i]),
-            responseObject.daily.cloud_cover_mean[i],
-            new Visibility(responseObject.daily.visibility_mean[i] ?? double.NaN),
-            new Precipitation(responseObject.daily.precipitation_sum[i]), 
-            responseObject.daily.precipitation_probability_max[i], 
-            new Speed(responseObject.daily.wind_gusts_10m_max[i]),
-            new Speed(responseObject.daily.wind_gusts_10m_mean[i]),
-            new Speed(responseObject.daily.wind_speed_10m_max[i]),
-            new Speed(responseObject.daily.wind_speed_10m_mean[i]),
-            responseObject.daily.wind_direction_10m_dominant[i],
-            _decodeWeatherCode[responseObject.daily.weather_code[i]].Description,
-            dictionary[responseObject.daily.weather_code[i]].WeatherIconUri,
-            [])).ToList();
-
-        foreach (var dwi in dailyWeatherInfo)
+        try
         {
-            var hourlyListForDay = hourlyWeatherInfo.Where(hd => 
-                DateOnly.FromDateTime(hd.DateTime).CompareTo(dwi.Date) == 0);
-            dwi.HourlyWeatherInfo.AddRange(hourlyListForDay);
+            using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoForecastClientName);
+            using var response = await client.GetAsync(requestUri);
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var responseObject = JsonSerializer.Deserialize<WeatherResponse>(jsonResponse);
+
+            var location = new GeoLocation(
+                responseObject!.latitude, responseObject.longitude, new ShortDistance(responseObject.elevation));
+
+            var hourlyWeatherInfo = responseObject.hourly.time.Select((dateTime, i) =>
+                new HourlyWeatherInfo(
+                    DateTimeUtils.ToUtc(dateTime, responseObject.timezone),
+                    new Temperature(responseObject.hourly.temperature_2m[i]),
+                    new Temperature(responseObject.hourly.apparent_temperature[i]),
+                    new Temperature(responseObject.hourly.dew_point_2m[i]),
+                    new Speed(responseObject.hourly.wind_speed_10m[i]),
+                    responseObject.hourly.wind_direction_10m[i],
+                    new Speed(responseObject.hourly.wind_gusts_10m[i]),
+                    responseObject.hourly.relative_humidity_2m[i],
+                    new Pressure(responseObject.hourly.pressure_msl[i]),
+                    new Precipitation(responseObject.hourly.precipitation[i]),
+                    responseObject.hourly.precipitation_probability[i],
+                    responseObject.hourly.weather_code[i],
+                    _decodeWeatherCode[responseObject.hourly.weather_code[i]].Description,
+                    new Visibility(responseObject.hourly.visibility[i]),
+                    responseObject.hourly.cloud_cover[i])
+            ).ToList();
+
+            hourlyWeatherInfo.Sort();
+
+            var now = DateTime.Now.ToUniversalTime();
+
+            var todayStart = DateTime.SpecifyKind(
+                new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0), DateTimeKind.Utc);
+
+            var hourlyWeatherForRestOfTodayAndFuture =
+                hourlyWeatherInfo.Where(item => item.DateTime >= todayStart).ToList();
+
+            var hoursUntilMidnightTomorrow = 48 - DateTime.Now.Hour;
+
+            var hourlyWeatherInfoForRestOfTodayAndTomorrow =
+                hourlyWeatherForRestOfTodayAndFuture[..hoursUntilMidnightTomorrow];
+
+            var dictionary = responseObject.current.is_day != 0 ? _decodeWeatherCode : _decodeWeatherCodeNight;
+
+            var dailyWeatherInfo = responseObject.daily.time.Select((date, i) => new DailyWeatherInfo(
+                date,
+                new Temperature(responseObject.daily.temperature_2m_min[i]),
+                new Temperature(responseObject.daily.temperature_2m_max[i]),
+                responseObject.daily.sunrise[i],
+                responseObject.daily.sunset[i],
+                responseObject.daily.uv_index_max[i] ?? double.NaN,
+                new Pressure(responseObject.daily.pressure_msl_mean[i]),
+                responseObject.daily.relative_humidity_2m_mean[i],
+                new Temperature(responseObject.daily.dew_point_2m_mean[i]),
+                responseObject.daily.cloud_cover_mean[i],
+                new Visibility(responseObject.daily.visibility_mean[i] ?? double.NaN),
+                new Precipitation(responseObject.daily.precipitation_sum[i]),
+                responseObject.daily.precipitation_probability_max[i],
+                new Speed(responseObject.daily.wind_gusts_10m_max[i]),
+                new Speed(responseObject.daily.wind_gusts_10m_mean[i]),
+                new Speed(responseObject.daily.wind_speed_10m_max[i]),
+                new Speed(responseObject.daily.wind_speed_10m_mean[i]),
+                responseObject.daily.wind_direction_10m_dominant[i],
+                _decodeWeatherCode[responseObject.daily.weather_code[i]].Description,
+                dictionary[responseObject.daily.weather_code[i]].WeatherIconUri,
+                [])).ToList();
+
+            foreach (var dwi in dailyWeatherInfo)
+            {
+                var hourlyListForDay = hourlyWeatherInfo.Where(hd =>
+                    DateOnly.FromDateTime(hd.DateTime).CompareTo(dwi.Date) == 0);
+                dwi.HourlyWeatherInfo.AddRange(hourlyListForDay);
+            }
+
+            dailyWeatherInfo.Sort();
+
+            var airPressureChange = AirPressureChange(
+                responseObject.current.pressure_msl,
+                hourlyWeatherForRestOfTodayAndFuture[2].AirPressure.MetricValue);
+
+            var todayWeatherData = new CurrentWeatherInfo(
+                "Today",
+                true,
+                responseObject.current.is_day != 0,
+                new Temperature(responseObject.current.temperature_2m),
+                new Temperature(responseObject.current.apparent_temperature),
+                dailyWeatherInfo[0].TemperatureMin,
+                dailyWeatherInfo[0].TemperatureMax,
+                responseObject.current.uv_index,
+                dailyWeatherInfo[0].UvIndexMax,
+                responseObject.current.cloud_cover,
+                dailyWeatherInfo[0].Sunrise,
+                dailyWeatherInfo[0].Sunset,
+                responseObject.current.relative_humidity_2m,
+                new Temperature(responseObject.current.dew_point_2m),
+                new Pressure(responseObject.current.pressure_msl),
+                airPressureChange,
+                new Speed(responseObject.current.wind_speed_10m),
+                new Speed(responseObject.current.wind_gusts_10m),
+                responseObject.current.wind_direction_10m,
+                new Visibility(responseObject.current.visibility),
+                dailyWeatherInfo[0].PrecipitationProbabilityMax,
+                dailyWeatherInfo[0].PrecipitationSum,
+                dictionary[responseObject.current.weather_code].Description,
+                dictionary[responseObject.current.weather_code].WeatherIconUri
+            );
+
+            var tomorrowWeatherData = new CurrentWeatherInfo(
+                "Tomorrow",
+                false,
+                true,
+                new Temperature(0),
+                new Temperature(0),
+                dailyWeatherInfo[1].TemperatureMin,
+                dailyWeatherInfo[1].TemperatureMax,
+                0,
+                dailyWeatherInfo[1].UvIndexMax,
+                dailyWeatherInfo[1].CloudCoverMean,
+                dailyWeatherInfo[1].Sunrise,
+                dailyWeatherInfo[1].Sunset,
+                dailyWeatherInfo[1].RelativeHumidityMean,
+                dailyWeatherInfo[1].DewPointMean,
+                dailyWeatherInfo[1].AirPressureMean,
+                string.Empty,
+                dailyWeatherInfo[1].WindSpeedMean,
+                dailyWeatherInfo[1].WindGustsMean,
+                dailyWeatherInfo[1].WindDirectionDominant,
+                dailyWeatherInfo[1].VisibilityMean,
+                dailyWeatherInfo[1].PrecipitationProbabilityMax,
+                dailyWeatherInfo[1].PrecipitationSum,
+                dailyWeatherInfo[1].WeatherDescription,
+                dailyWeatherInfo[1].WeatherIconUri
+            );
+
+            CurrentWeatherInfo[] todayAndTomorrowWeatherInfo = [todayWeatherData, tomorrowWeatherData];
+
+            return new WeatherInfo(
+                location,
+                DateTime.Parse(responseObject.current.time, CultureInfo.InvariantCulture),
+                [..todayAndTomorrowWeatherInfo],
+                hourlyWeatherInfoForRestOfTodayAndTomorrow,
+                dailyWeatherInfo,
+                hourlyWeatherInfo);
         }
+        catch (Exception ex)
+        {
+            Log.Error($"GetCurrentWeather: web service call exception: {ex}");
 
-        dailyWeatherInfo.Sort();
-
-        var airPressureChange = AirPressureChange(
-            responseObject.current.pressure_msl, 
-            hourlyWeatherForRestOfTodayAndFuture[2].AirPressure.MetricValue);
-
-        var todayWeatherData = new CurrentWeatherInfo(
-            "Today",
-            true,
-            responseObject.current.is_day != 0,
-            new Temperature(responseObject.current.temperature_2m), 
-            new Temperature(responseObject.current.apparent_temperature),
-            dailyWeatherInfo[0].TemperatureMin, 
-            dailyWeatherInfo[0].TemperatureMax,
-            responseObject.current.uv_index,
-            dailyWeatherInfo[0].UvIndexMax,
-            responseObject.current.cloud_cover,
-            dailyWeatherInfo[0].Sunrise,
-            dailyWeatherInfo[0].Sunset,
-            responseObject.current.relative_humidity_2m, 
-            new Temperature(responseObject.current.dew_point_2m),
-            new Pressure(responseObject.current.pressure_msl),
-            airPressureChange,
-            new Speed(responseObject.current.wind_speed_10m),
-            new Speed(responseObject.current.wind_gusts_10m),
-            responseObject.current.wind_direction_10m,
-            new Visibility(responseObject.current.visibility),
-            dailyWeatherInfo[0].PrecipitationProbabilityMax,
-            dailyWeatherInfo[0].PrecipitationSum,
-            dictionary[responseObject.current.weather_code].Description,
-            dictionary[responseObject.current.weather_code].WeatherIconUri
-        );
-        
-        var tomorrowWeatherData = new CurrentWeatherInfo(
-            "Tomorrow",
-            false,
-            true,
-            new Temperature(0), 
-            new Temperature(0),
-            dailyWeatherInfo[1].TemperatureMin,
-            dailyWeatherInfo[1].TemperatureMax,
-            0,
-            dailyWeatherInfo[1].UvIndexMax,
-            dailyWeatherInfo[1].CloudCoverMean,
-            dailyWeatherInfo[1].Sunrise,
-            dailyWeatherInfo[1].Sunset,
-            dailyWeatherInfo[1].RelativeHumidityMean,
-            dailyWeatherInfo[1].DewPointMean,
-            dailyWeatherInfo[1].AirPressureMean,
-            string.Empty,
-            dailyWeatherInfo[1].WindSpeedMean,
-            dailyWeatherInfo[1].WindGustsMean,
-            dailyWeatherInfo[1].WindDirectionDominant,
-            dailyWeatherInfo[1].VisibilityMean,
-            dailyWeatherInfo[1].PrecipitationProbabilityMax,
-            dailyWeatherInfo[1].PrecipitationSum,
-            dailyWeatherInfo[1].WeatherDescription,
-            dailyWeatherInfo[1].WeatherIconUri
-        );
-
-        CurrentWeatherInfo[] todayAndTomorrowWeatherInfo = [todayWeatherData, tomorrowWeatherData];
-        
-        return new WeatherInfo(
-            location,
-            DateTime.Parse(responseObject.current.time, CultureInfo.InvariantCulture),
-            [..todayAndTomorrowWeatherInfo],
-            hourlyWeatherInfoForRestOfTodayAndTomorrow,
-            dailyWeatherInfo,
-            hourlyWeatherInfo);
+            throw;
+        }
+        finally
+        {
+            var duration = DateTime.Now - startTime;
+            
+            Log.Info($"GetCurrentWeather: web service call duration: {duration}");
+        }
     }
 
     private static string GetCurrentWeatherRequestUri(LocationData locationData)
@@ -397,77 +409,88 @@ public class OpenMeteo
         var requestUri = GetHistoricalWeatherRequestUri(locationData, startDate, endDate);
 
         var startTime = DateTime.Now;
-        
-        using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoHistoricalClientName);
-        using var response = await client.GetAsync(requestUri);
 
-        var duration = DateTime.Now - startTime;
-        Log.Info($"GetHistoricalWeather: web service call elapsed time: {duration}");
-
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var jsonResponse = await response.Content.ReadAsStringAsync();
+            using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoHistoricalClientName);
+            using var response = await client.GetAsync(requestUri);
 
-            // TODO: Need to create HistoricalWeatherResponse class and update data extraction code accordingly.
-            var responseObject = JsonSerializer.Deserialize<HistoricalResponse>(jsonResponse);
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonSerializer.Deserialize<HistoricalResponse>(jsonResponse);
 
-            Log.Info($"responseObject: error: {responseObject!.error} reason: {responseObject.reason}");
+                Log.Info($"responseObject: error: {responseObject!.error} reason: {responseObject.reason}");
 
-            var dailyWeatherInfo = responseObject.daily.time.Select((date, i) => new DailyWeatherInfo(
-                date,
-                new Temperature(responseObject.daily.temperature_2m_min[i]),
-                new Temperature(responseObject.daily.temperature_2m_max[i]),
-                responseObject.daily.sunrise[i],
-                responseObject.daily.sunset[i],
-                responseObject.daily.uv_index_max[i] ?? Double.NaN,
-                new Pressure(responseObject.daily.pressure_msl_mean[i]),
-                responseObject.daily.relative_humidity_2m_mean[i],
-                new Temperature(responseObject.daily.dew_point_2m_mean[i]),
-                responseObject.daily.cloud_cover_mean[i],
-                new Visibility(responseObject.daily.visibility_mean[i] ?? Double.NaN),
-                new Precipitation(responseObject.daily.precipitation_sum[i]),
-                0,
-                new Speed(responseObject.daily.wind_gusts_10m_max[i]),
-                new Speed(responseObject.daily.wind_gusts_10m_mean[i]),
-                new Speed(responseObject.daily.wind_speed_10m_max[i]),
-                new Speed(responseObject.daily.wind_speed_10m_mean[i]),
-                responseObject.daily.wind_direction_10m_dominant[i],
-                _decodeWeatherCode[responseObject.daily.weather_code[i]].Description,
-                _decodeWeatherCode[responseObject.daily.weather_code[i]].WeatherIconUri,
-                [])).ToList();
+                var dailyWeatherInfo = responseObject.daily.time.Select((date, i) => new DailyWeatherInfo(
+                    date,
+                    new Temperature(responseObject.daily.temperature_2m_min[i]),
+                    new Temperature(responseObject.daily.temperature_2m_max[i]),
+                    responseObject.daily.sunrise[i],
+                    responseObject.daily.sunset[i],
+                    responseObject.daily.uv_index_max[i] ?? Double.NaN,
+                    new Pressure(responseObject.daily.pressure_msl_mean[i]),
+                    responseObject.daily.relative_humidity_2m_mean[i],
+                    new Temperature(responseObject.daily.dew_point_2m_mean[i]),
+                    responseObject.daily.cloud_cover_mean[i],
+                    new Visibility(responseObject.daily.visibility_mean[i] ?? Double.NaN),
+                    new Precipitation(responseObject.daily.precipitation_sum[i]),
+                    0,
+                    new Speed(responseObject.daily.wind_gusts_10m_max[i]),
+                    new Speed(responseObject.daily.wind_gusts_10m_mean[i]),
+                    new Speed(responseObject.daily.wind_speed_10m_max[i]),
+                    new Speed(responseObject.daily.wind_speed_10m_mean[i]),
+                    responseObject.daily.wind_direction_10m_dominant[i],
+                    _decodeWeatherCode[responseObject.daily.weather_code[i]].Description,
+                    _decodeWeatherCode[responseObject.daily.weather_code[i]].WeatherIconUri,
+                    [])).ToList();
 
-            dailyWeatherInfo.Sort();
-            
-            var totalPrecipitation = new Precipitation(dailyWeatherInfo.Sum(x => x.PrecipitationSum.MetricValue));
-            var minTemperature = new Temperature(dailyWeatherInfo.Min(x => x.TemperatureMin.MetricValue));
-            var maxTemperature = new Temperature(dailyWeatherInfo.Max(x => x.TemperatureMax.MetricValue));
-            var maxWindSpeed = new Speed(dailyWeatherInfo.Max(x => x.WindSpeedMax.MetricValue));
-            var maxWindGusts = new Speed(dailyWeatherInfo.Max(x => x.WindGustsMax.MetricValue));
-                
-            var result = new HistoricalWeatherInfo(
-                dailyWeatherInfo, 
-                totalPrecipitation, 
-                minTemperature, 
-                maxTemperature, 
-                maxWindSpeed,
-                maxWindGusts,
-                responseObject.error, 
-                responseObject.reason);
+                dailyWeatherInfo.Sort();
 
-            return result;
+                var totalPrecipitation = new Precipitation(dailyWeatherInfo.Sum(x => x.PrecipitationSum.MetricValue));
+                var minTemperature = new Temperature(dailyWeatherInfo.Min(x => x.TemperatureMin.MetricValue));
+                var maxTemperature = new Temperature(dailyWeatherInfo.Max(x => x.TemperatureMax.MetricValue));
+                var maxWindSpeed = new Speed(dailyWeatherInfo.Max(x => x.WindSpeedMax.MetricValue));
+                var maxWindGusts = new Speed(dailyWeatherInfo.Max(x => x.WindGustsMax.MetricValue));
+
+                var result = new HistoricalWeatherInfo(
+                    dailyWeatherInfo,
+                    totalPrecipitation,
+                    minTemperature,
+                    maxTemperature,
+                    maxWindSpeed,
+                    maxWindGusts,
+                    responseObject.error,
+                    responseObject.reason);
+
+                return result;
+            }
+            else
+            {
+                Log.Info(
+                    $"GetHistoricalWeather: got response of {response.StatusCode} reason: {response.ReasonPhrase}");
+                return new HistoricalWeatherInfo(
+                    [],
+                    new Precipitation(0.0),
+                    new Temperature(0.0),
+                    new Temperature(0.0),
+                    new Speed(0.0),
+                    new Speed(0.0),
+                    true,
+                    response.ReasonPhrase!);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Log.Info($"GetHistoricalWeather: got response of {response.StatusCode} reason: {response.ReasonPhrase}");
-            return new HistoricalWeatherInfo(
-                [], 
-                new Precipitation(0.0), 
-                new Temperature(0.0), 
-                new Temperature(0.0), 
-                new Speed(0.0),
-                new Speed(0.0),
-                true, 
-                response.ReasonPhrase!);
+            Log.Error($"GetHistoricalWeather: web service call exception: {ex}");
+
+            throw;
+        }
+        finally
+        {
+            var duration = DateTime.Now - startTime;
+            
+            Log.Info($"GetHistoricalWeather: web service call elapsed time: {duration}");
         }
     }
 
@@ -502,36 +525,48 @@ public class OpenMeteo
 
         var startTime = DateTime.Now;
 
-        using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoGeoCodingClientName);
-        using var response = await client.GetAsync(requestUri);
-
-        var duration = DateTime.Now - startTime;
-        Log.Info($"GetGeoLocations: web service call duration: {duration}");
-
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-
-        var responseObject = JsonSerializer.Deserialize<LocationResponse>(jsonResponse);
-
-        if (responseObject!.results is not null)
+        try
         {
-            Log.Info($"GetGeoLocations: returning list of {responseObject.results.Length} items");
+            using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoGeoCodingClientName);
+            using var response = await client.GetAsync(requestUri);
 
-            return new LocationsData(responseObject.results.Select(locationInfo => new LocationData(
-                    locationInfo.id.ToString(CultureInfo.InvariantCulture),
-                    locationInfo.name,
-                    new GeoLocation(locationInfo.latitude, locationInfo.longitude,
-                        new ShortDistance(locationInfo.elevation)),
-                    locationInfo.country_code,
-                    locationInfo.admin1)
-                )
-                .OrderBy(x => x.Name)
-                .ThenBy(x => x.CountryCode)
-                .ThenBy(x => x.Admin1)
-                .ToList());
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var responseObject = JsonSerializer.Deserialize<LocationResponse>(jsonResponse);
+
+            if (responseObject!.results is not null)
+            {
+                Log.Info($"GetGeoLocations: returning list of {responseObject.results.Length} items");
+
+                return new LocationsData(responseObject.results.Select(locationInfo => new LocationData(
+                        locationInfo.id.ToString(CultureInfo.InvariantCulture),
+                        locationInfo.name,
+                        new GeoLocation(locationInfo.latitude, locationInfo.longitude,
+                            new ShortDistance(locationInfo.elevation)),
+                        locationInfo.country_code,
+                        locationInfo.admin1)
+                    )
+                    .OrderBy(x => x.Name)
+                    .ThenBy(x => x.CountryCode)
+                    .ThenBy(x => x.Admin1)
+                    .ToList());
+            }
+            else
+            {
+                return new LocationsData([]);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return new LocationsData([]);
+            Log.Error($"GetGeoLocations: web service call exception: {ex}");
+
+            throw;
+        }
+        finally
+        {
+            var duration = DateTime.Now - startTime;
+            
+            Log.Info($"GetGeoLocations: web service call duration: {duration}");
         }
     }
 }
