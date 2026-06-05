@@ -39,7 +39,11 @@ sealed class Program
     public static void Main(string[] args)
     {
         var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
-        XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+        
+        // Specify full path of the log4net.config file. Otherwise the config file may not be loaded, depending on the
+        // current directory.
+        var log4NetConfigPath = $"{AppContext.BaseDirectory}log4net.config";
+        XmlConfigurator.Configure(logRepository, new FileInfo(log4NetConfigPath));
 
         Log.Info("App Launched");
         
