@@ -1,4 +1,4 @@
-﻿<log4net>
+<log4net>
     <root>
         <level value="ALL" />
         <appender-ref ref="console" />
