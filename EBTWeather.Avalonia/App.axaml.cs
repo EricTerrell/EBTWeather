@@ -97,7 +97,7 @@ public partial class App : Application
     {
         Log.Info("OnStartup");
 
-        Task.Run(() => _mainWindowViewModel.StartTimer()).GetAwaiter().GetResult();
+        Task.Run(() => _mainWindowViewModel.StartTimer());
     }
 
     private void OnShutdown()
@@ -120,8 +120,8 @@ public partial class App : Application
             .Or<TimeoutRejectedException>() // thrown by Polly's TimeoutPolicy if the inner call times out
             .WaitAndRetryAsync(
                 retryCount: retries,
-                sleepDurationProvider: retryAttempt => sleepDuration,
-                onRetry: (exception, timeSpan, retryCount, context) =>
+                sleepDurationProvider: _ => sleepDuration,
+                onRetry: (exception, timeSpan, retryCount, _) =>
                 {
                     Log.Warn($"Retry {retryCount} after {timeSpan.TotalSeconds} seconds due to: {exception.Exception.Message}");
                 });
@@ -149,7 +149,7 @@ public partial class App : Application
             {
                 client.BaseAddress = new Uri("https://api.open-meteo.com");
             })
-            .AddPolicyHandler(CreateRetryPolicy(4, sleepTime))
+            .AddPolicyHandler(CreateRetryPolicy(10, sleepTime))
             .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));
 
         services.AddHttpClient(Constants.OpenMeteoHistoricalClientName, client =>
