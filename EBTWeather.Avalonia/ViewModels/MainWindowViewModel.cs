@@ -289,6 +289,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private async Task UpdateHistoricalWeatherData()
     {
+        HistoricalWeather = null;
+        
         if (HistoricalSelectedMinDate != null && HistoricalSelectedMaxDate != null && 
             CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count)
         {
