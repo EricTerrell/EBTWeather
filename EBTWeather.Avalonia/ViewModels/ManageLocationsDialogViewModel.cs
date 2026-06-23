@@ -74,30 +74,30 @@ public partial class ManageLocationsDialogViewModel : ObservableValidator
     [NotifyCanExecuteChangedFor(nameof(SearchCommand))]
     private string _locationName = string.Empty;
 
-    [ObservableProperty] [Required] [Range(0, MaxLatitudeDegrees)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    [ObservableProperty] [Required(ErrorMessage = "Degrees is required")] [Range(0, MaxLatitudeDegrees)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     private int? _latitudeDegrees;
 
-    [ObservableProperty] [Required] [Range(0, MaxMinutes)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    [ObservableProperty] [Required(ErrorMessage = "Minutes is required")] [Range(0, MaxMinutes)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     private int? _latitudeMinutes;
 
     [ObservableProperty]
-    [Required]
+    [Required(ErrorMessage = "Seconds is required")]
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     [CustomValidation(typeof(ManageLocationsDialogViewModel), nameof(ValidateSeconds))]
     private int? _latitudeSeconds;
 
     [ObservableProperty] private int? _latitudeDirection = 0;
 
-    [ObservableProperty] [Required] [Range(0, MaxLongitudeDegrees)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    [ObservableProperty] [Required(ErrorMessage = "Degrees is required")] [Range(0, MaxLongitudeDegrees)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     private int? _longitudeDegrees;
 
-    [ObservableProperty] [Required] [Range(0, MaxMinutes)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    [ObservableProperty] [Required(ErrorMessage = "Minutes is required")] [Range(0, MaxMinutes)] [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     private int? _longitudeMinutes;
 
     [ObservableProperty] private int? _longitudeDirection = 1;
 
     [ObservableProperty]
-    [Required]
+    [Required(ErrorMessage = "Seconds is required")]
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     [CustomValidation(typeof(ManageLocationsDialogViewModel), nameof(ValidateSeconds))]
     private int? _longitudeSeconds;

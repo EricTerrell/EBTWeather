@@ -518,7 +518,7 @@ public class OpenMeteo
 
         if (countryCode != null)
         {
-            requestUri =  $"{requestUri}&countryCode={countryCode.ToUpper()}";
+            requestUri =  $"{requestUri}&countryCode={countryCode.ToUpper(CultureInfo.InvariantCulture)}";
         }
         
         Log.Info(requestUri);
