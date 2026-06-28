@@ -38,6 +38,6 @@ if (!(Test-Path "C:\temp\EBTWeather"))
     New-Item -Path "C:\temp\EBTWeather" -ItemType Directory
 }
 
-Compress-Archive -Path ".\bin\Release\net10.0\linux-x64\publish\*" -DestinationPath "C:\temp\EBTWeather\EBTWeather-linux-x64.zip" -Force
+7z a -tzip "C:\temp\EBTWeather\EBTWeather-linux-x64.zip" ".\bin\Release\net10.0\linux-x64\publish\*"
 
 Pop-Location

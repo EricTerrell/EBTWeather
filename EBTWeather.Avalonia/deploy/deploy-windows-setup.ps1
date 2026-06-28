@@ -31,7 +31,7 @@ if (!(Test-Path "C:\temp\EBTWeather"))
     New-Item -Path "C:\temp\EBTWeather" -ItemType Directory
 }
 
-Compress-Archive -Path ".\setup\Output\*" -DestinationPath "C:\temp\EBTWeather\EBTWeather-win32-x64.zip" -Force
+7z a -tzip "C:\temp\EBTWeather\EBTWeather-win32-x64.zip" ".\setup\Output\*"
 
 Write-Output ""
 Write-Output "Finished creating Windows Setup Zip File"
