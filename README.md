@@ -46,10 +46,6 @@ Add Exact Location:
 A `--minimize` argument specified when the app is launched will launch the app minimized. Otherwise it will launch
 with normal main window.
 
-# Versions
-
-[`Version History`](https://www.ericbt.com/ebt_weather/versionhistory)
-
 # Links
 
 * [`website`](https://www.ericbt.com/ebt_weather)
