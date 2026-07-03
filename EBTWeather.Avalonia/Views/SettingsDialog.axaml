@@ -75,8 +75,12 @@
                 Text="An optional OpenWeatherMap key is required to retrieve air quality data (AQI)" 
                 TextWrapping="Wrap" />
             <HyperlinkButton Grid.Row="3" Grid.Column="0" Content="Apply for OpenWeatherMap API Key" NavigateUri="https://home.openweathermap.org/users/sign_in" />
-            <Label Grid.Row="4" Grid.Column="0" Content="OpenWeatherMap API Key (optional)" />
-            <TextBox Grid.Row="4" Grid.Column="1" PasswordChar="*" Text="{Binding AirPollutionApiKey}" />
+            <Label Grid.Row="4" Grid.Column="0" Content="OpenWeatherMap _API Key (optional)" Target="ApiKeyTextBox" />
+            <TextBox 
+                Grid.Row="4" Grid.Column="1" 
+                PasswordChar="*"
+                Name="ApiKeyTextBox"
+                Text="{Binding AirPollutionApiKey}" />
             <CheckBox 
                 Grid.Row="5" 
                 Grid.Column="0" 
