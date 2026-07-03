@@ -34,6 +34,6 @@ public partial class SettingsDialog : CustomDialog<SettingsDialogViewModel>
     {
         base.OnLoaded(e);
 
-        UnitsComboBox.Focus();
+        ScreenModeComboBox.Focus();
     }
 }

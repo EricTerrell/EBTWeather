@@ -578,6 +578,7 @@
             Grid.Row="3"
             Content="_Refresh"
             Command="{Binding RefreshCommand}"
+            IsEnabled="{Binding RefreshButtonIsEnabled}"
             Margin="10"/>
         <StackPanel
             Grid.Row="4"

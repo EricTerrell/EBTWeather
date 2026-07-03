@@ -46,8 +46,8 @@
             RowSpacing="10">
             <Label 
                 Grid.Row="0" Grid.Column="0"
-                Content="Screen Mode:"
-                Target="{Binding ElementName=ScreenModeComboBox}"
+                Content="Screen _Mode:"
+                Target="ScreenModeComboBox"
                 VerticalAlignment="Center" />
             <ComboBox
                 Name="ScreenModeComboBox"
@@ -60,7 +60,7 @@
             <Label 
                 Grid.Row="1" Grid.Column="0"
                 Content="_Units:"
-                Target="{Binding ElementName=UnitsComboBox}"
+                Target="UnitsComboBox"
                 VerticalAlignment="Center" />
             <ComboBox
                 Name="UnitsComboBox"

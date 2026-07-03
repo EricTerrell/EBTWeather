@@ -95,6 +95,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private string _precipitationSuffix;
 
+    [ObservableProperty] private bool _refreshButtonIsEnabled;
+    
     public ObservableCollection<LocationData> LocationData { get; set; }
 
     [ObservableProperty]
@@ -275,6 +277,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
             try
             {
+                RefreshButtonIsEnabled = false;
+                
                 CurrentAndFutureWeather = await _openMeteo.GetCachedCurrentWeather(location, _cache);
                 await UpdateHistoricalWeatherData();
             }
@@ -284,6 +288,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
                 error = true;
                 StatusMessage = $"Error: {ex.Message}";
+                
+                RefreshButtonIsEnabled = true;
             }
 
             if (!error)
@@ -357,15 +363,10 @@ public partial class MainWindowViewModel : ViewModelBase
         await new CheckForUpdatesDialog().LaunchAsync(window);
     }
 
-    [RelayCommand(CanExecute = nameof(CanRefresh))]
+    [RelayCommand]
     private async Task Refresh()
     {
         await Task.Run(async () => await UpdateWeatherData());
-    }
-
-    private bool CanRefresh()
-    {
-        return CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count;
     }
     
     /// <summary>
