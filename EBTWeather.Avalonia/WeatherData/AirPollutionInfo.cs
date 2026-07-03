@@ -18,34 +18,16 @@
   along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using EBTWeather.Avalonia.UnitValues;
-
 namespace EBTWeather.Avalonia.WeatherData;
 
-public record CurrentWeatherInfo(
-    string Title,
-    bool IsToday,
-    bool IsDay,
-    Temperature Temperature,
-    Temperature ApparentTemperature,
-    Temperature TemperatureMin,
-    Temperature TemperatureMax,
-    double UvIndex,
-    double UvIndexMax,
-    int CloudCover,
-    string Sunrise,
-    string Sunset,
-    double RelativeHumidity,
-    Temperature DewPoint,
-    Pressure AirPressure,
-    string AirPressureChange,
-    Speed WindSpeed,
-    Speed WindGusts,
-    int WindDirection,
-    Visibility Visibility,
-    double PrecipitationProbability,
-    Precipitation PrecipitationSum,
-    string WeatherDescription,
-    string WeatherIconUri,
-    AirPollutionInfo? AirPollutionInfo
-);
+public record Components(
+  double co,
+  double no,
+  double no2,
+  double o3,
+  double so2,
+  double pm2_5,
+  double pm10,
+  double nh3);
+
+public record AirPollutionInfo(int aqi, Components components);

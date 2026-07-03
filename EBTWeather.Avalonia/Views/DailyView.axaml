@@ -33,12 +33,22 @@
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
+    <UserControl.Styles>
+        <Style Selector="ToolTip">
+            <Setter Property="FontFamily" Value="Lucida Console" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+    </UserControl.Styles>
     <UserControl.Resources>
         <converters:ShortTimeConverter x:Key="ShortTimeConverter" />
         <converters:AngleConverter x:Key="AngleConverter" />
         <converters:BooleanToIntConverter x:Key="BooleanToIntConverter" />
         <converters:BitMapAssetValueConverter x:Key="BitMapAssetValueConverter" />
         <converters:ShortDateTimeConverter x:Key="ShortDateTimeConverter" />
+        <converters:AirPollutionAqiConverter x:Key="AirPollutionAqiConverter" />
+        <converters:AirPollutionComponentsConverter x:Key="AirPollutionComponentsConverter" />
+        <converters:AirPollutionColorConverter x:Key="AirPollutionColorConverter" />
     </UserControl.Resources>
     <ItemsControl ItemsSource="{Binding CurrentAndFutureWeather.TodayAndTomorrowWeatherInfo}">
         <ItemsControl.ItemsPanel>
@@ -58,15 +68,16 @@
                                 <TextBlock>
                                     <Run Text="{Binding Title}" FontSize="24" FontWeight="Bold" />
                                 </TextBlock>
-                                <TextBlock 
-                                    VerticalAlignment="Center" 
-                                    FontSize="14" 
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
                                     FontWeight="Normal"
                                     Margin="5, 0, 0, 0"
                                     IsVisible="{Binding IsToday}">
                                     <Run Text="(as of " />
-                                    <Run Text="{Binding Path=DataContext.CurrentAndFutureWeather.AsOfTime, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ShortDateTimeConverter}}" />
-                                    <Run Text="local time)"/>
+                                    <Run
+                                        Text="{Binding Path=DataContext.CurrentAndFutureWeather.AsOfTime, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ShortDateTimeConverter}}" />
+                                    <Run Text="local time)" />
                                 </TextBlock>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
@@ -188,7 +199,40 @@
                                 FontSize="24" FontWeight="Bold" />
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0">
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Grid.Row="3" Grid.Column="1"
+                        Opacity="{Binding IsToday, Converter={StaticResource BooleanToIntConverter}}">
+                        <TextBlock
+                            Height="36"
+                            Text="AQI"
+                            FontSize="24"
+                            FontWeight="Bold">
+                            <ToolTip.Tip>
+                                <TextBlock
+                                    Text="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionComponentsConverter}}" />
+                            </ToolTip.Tip>
+                        </TextBlock>
+                        <TextBlock
+                            Text="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionAqiConverter}}"
+                            Height="36"
+                            FontSize="24"
+                            FontWeight="Bold"
+                            Margin="10, 0, 0, 0" />
+                        <Canvas
+                            Height="30"
+                            Width="30"
+                            Margin="10, 0, 0, 0">
+                                <Ellipse 
+                                    Width="30" 
+                                    Height="30"
+                                    Fill="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionColorConverter}}">
+                                </Ellipse>
+                        </Canvas>
+                    </StackPanel>
+                    <StackPanel 
+                        Orientation="Horizontal" 
+                        Grid.Row="4" Grid.Column="0">
                         <Image
                             Source="avares://EBTWeather/Assets/Icons/meteocons/sunrise.png"
                             Width="36"
@@ -202,9 +246,13 @@
                                 FontWeight="Bold" />
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
+                    <StackPanel 
+                        Orientation="Horizontal" 
+                        Grid.Row="4" Grid.Column="1">
                         <Image
                             Source="avares://EBTWeather/Assets/Icons/meteocons/sunset.png"
+                            Width="36"
+                            Height="36"
                             ToolTip.Tip="sunset" />
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                                     Margin="10, 0, 0, 0">

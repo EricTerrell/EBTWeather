@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EBT Weather"
-#define MyAppVersion "1.01"
+#define MyAppVersion "1.02"
 #define MyAppPublisher "Eric Bergman-Terrell"
 #define MyAppURL "https://www.EricBT.com/"
 #define MyAppExeName "EBTWeather.exe"
@@ -100,10 +100,10 @@ Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EB
 Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\System.Security.Permissions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\Tmds.DBus.Protocol.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\UnitsNet.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\fr-CA\UnitsNet.resources.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\nb-NO\UnitsNet.resources.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\ru-RU\UnitsNet.resources.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\zh-CN\UnitsNet.resources.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\fr-CA\UnitsNet.resources.dll"; DestDir: "{app}\fr-CA"; Flags: ignoreversion
+Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\nb-NO\UnitsNet.resources.dll"; DestDir: "{app}\nb-NO"; Flags: ignoreversion
+Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\ru-RU\UnitsNet.resources.dll"; DestDir: "{app}\ru-RU"; Flags: ignoreversion
+Source: "C:\Users\erict\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\bin\Release\net10.0\win-x64\publish\zh-CN\UnitsNet.resources.dll"; DestDir: "{app}\zh-CN"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

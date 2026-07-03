@@ -175,10 +175,31 @@ public class OpenMeteo
 
         try
         {
-            using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoForecastClientName);
-            using var response = await client.GetAsync(requestUri);
+            // Retrieve current weather data, and air pollution data, in parallel.
+            var currentWeatherTask = Task.Run(async () =>
+            {
+                using var client = _httpClientFactory.CreateClient(Constants.OpenMeteoForecastClientName);
+                using var response = await client.GetAsync(requestUri);
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync();
+            });
+
+            var airPollutionTask = Task.Run(async () =>
+            {
+                if (!String.IsNullOrEmpty(Settings.AirPollutionApiKey))
+                {
+                    return await new AirPollution(_httpClientFactory).GetCurrentAirPollutionInfo(locationData,
+                        Settings.AirPollutionApiKey.Trim());
+                }
+                else
+                {
+                    return null;
+                }
+            });
+            
+            await Task.WhenAll(currentWeatherTask, airPollutionTask);
+            
+            var jsonResponse = currentWeatherTask.Result;
 
             var responseObject = JsonSerializer.Deserialize<WeatherResponse>(jsonResponse);
 
@@ -281,7 +302,8 @@ public class OpenMeteo
                 dailyWeatherInfo[0].PrecipitationProbabilityMax,
                 dailyWeatherInfo[0].PrecipitationSum,
                 dictionary[responseObject.current.weather_code].Description,
-                dictionary[responseObject.current.weather_code].WeatherIconUri
+                dictionary[responseObject.current.weather_code].WeatherIconUri,
+                airPollutionTask.Result
             );
 
             var tomorrowWeatherData = new CurrentWeatherInfo(
@@ -308,7 +330,8 @@ public class OpenMeteo
                 dailyWeatherInfo[1].PrecipitationProbabilityMax,
                 dailyWeatherInfo[1].PrecipitationSum,
                 dailyWeatherInfo[1].WeatherDescription,
-                dailyWeatherInfo[1].WeatherIconUri
+                dailyWeatherInfo[1].WeatherIconUri,
+                null
             );
 
             CurrentWeatherInfo[] todayAndTomorrowWeatherInfo = [todayWeatherData, tomorrowWeatherData];

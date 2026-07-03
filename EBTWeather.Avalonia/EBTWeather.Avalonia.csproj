@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-        <Version>1.01</Version>
+        <Version>1.02</Version>
         <ApplicationIcon>Assets/app_icon.ico</ApplicationIcon>
         <AssemblyName>EBTWeather</AssemblyName>
     </PropertyGroup>
@@ -48,7 +48,6 @@
 
     <ItemGroup>
       <Folder Include="setup\Output\" />
-      <Folder Include="web services\" />
     </ItemGroup>
 
     <ItemGroup>

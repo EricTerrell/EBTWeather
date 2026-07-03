@@ -89,6 +89,12 @@ public static class Settings
         set { _persistedSettings.CurrentLocationIndex = value; Save(); }
     }
 
+    public static string? AirPollutionApiKey
+    {
+        get => _persistedSettings.AirPollutionApiKey;
+        set { _persistedSettings.AirPollutionApiKey = value; Save(); }
+    }
+
     /// <summary>
     /// Return sorted list of locations
     /// </summary>
@@ -141,6 +147,8 @@ public static class Settings
         public bool SpecifyCountryCode {  get; set; }
 
         public int CurrentLocationIndex { get; set; } = -1;
+
+        public string? AirPollutionApiKey { get; set; }
     }
     
     private static PersistedSettings _persistedSettings = new();

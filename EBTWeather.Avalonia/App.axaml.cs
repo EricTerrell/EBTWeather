@@ -42,7 +42,7 @@ public partial class App : Application
 {
     private static readonly ILog Log = LogManager.GetLogger(typeof(App));
 
-    private MainWindowViewModel _mainWindowViewModel;
+    public MainWindowViewModel MainWindowViewModel { get; private set; }
     
     public IServiceProvider ServiceProvider { get; private set; }
     
@@ -67,7 +67,7 @@ public partial class App : Application
         
         ServiceProvider = services.BuildServiceProvider();
 
-        _mainWindowViewModel = ServiceProvider.GetRequiredService<MainWindowViewModel>();
+        MainWindowViewModel = ServiceProvider.GetRequiredService<MainWindowViewModel>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -77,7 +77,7 @@ public partial class App : Application
 
             desktop.MainWindow = new MainWindow
             {
-                DataContext = _mainWindowViewModel,
+                DataContext = MainWindowViewModel,
                 WindowState = minimize ? WindowState.Minimized : WindowState.Normal
             };
 
@@ -97,7 +97,7 @@ public partial class App : Application
     {
         Log.Info("OnStartup");
 
-        Task.Run(() => _mainWindowViewModel.StartTimer());
+        Task.Run(() => MainWindowViewModel.StartTimer());
     }
 
     private void OnShutdown()
@@ -162,6 +162,13 @@ public partial class App : Application
         services.AddHttpClient(Constants.OpenMeteoGeoCodingClientName, client =>
             {
                 client.BaseAddress = new Uri("https://geocoding-api.open-meteo.com");
+            })
+            .AddPolicyHandler(CreateRetryPolicy(2, sleepTime))
+            .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));
+
+        services.AddHttpClient(Constants.AirPollutionClientName, client =>
+            {
+                client.BaseAddress = new Uri("https://api.openweathermap.org");
             })
             .AddPolicyHandler(CreateRetryPolicy(2, sleepTime))
             .AddPolicyHandler(CreatePerTryTimeoutPolicy(eachTryTimeoutSeconds));

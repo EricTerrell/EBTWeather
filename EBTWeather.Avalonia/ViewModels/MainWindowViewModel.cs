@@ -58,7 +58,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Settings.LocationsData.Locations.ForEach(location => { LocationData.Add(location); });
 
         _openMeteo = new OpenMeteo(HttpClientFactory);
-
+        
         // Display information about menu items as each one is highlighted
         WeakReferenceMessenger.Default.Register<MainWindowViewModel, MenuMessage>
         (this, (_, msg) => { ProcessMenuMessage(msg.MenuName, msg.Selected); }
@@ -257,11 +257,17 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private async Task UpdateWeatherData()
+    public async Task UpdateWeatherData(bool clearCaches = false)
     {
         if (CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count)
         {
             StatusMessage = $"Retrieving weather data at {DateTime.Now.ToLongTimeString()}";
+
+            if (clearCaches)
+            {
+                Log.Info("UpdateWeatherData: Clearing caches");
+                (_cache as MemoryCache).Clear();
+            }
 
             var location = Settings.LocationsData.Locations[CurrentLocationIndex.Value];
 

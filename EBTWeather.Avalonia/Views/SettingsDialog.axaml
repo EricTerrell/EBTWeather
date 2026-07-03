@@ -23,15 +23,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:EBTWeather.Avalonia.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="225"
+        mc:Ignorable="d" d:DesignWidth="625" d:DesignHeight="300"
         x:Class="EBTWeather.Avalonia.Views.SettingsDialog"
         Title="Settings"
         x:DataType="viewModels:SettingsDialogViewModel"
         WindowStartupLocation="CenterOwner"
-        Width="300"
-        MinWidth="300"
-        Height="225"
-        MinHeight="225"
+        Width="625"
+        MinWidth="625"
+        Height="300"
+        MinHeight="300"
         CanResize="True"
         CanMinimize="False">
 
@@ -42,7 +42,7 @@
     <Grid Margin="10" RowDefinitions="*,Auto" ColumnDefinitions="*">
         <Grid 
             Grid.Row="0" 
-            RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto"
+            RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="300, 300"
             RowSpacing="10">
             <Label 
                 Grid.Row="0" Grid.Column="0"
@@ -70,8 +70,15 @@
                 ItemsSource="{Binding AllUnits}"
                 SelectedItem="{Binding Units}" 
             />
+            <TextBlock 
+                Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                Text="An optional OpenWeatherMap key is required to retrieve air quality data (AQI)" 
+                TextWrapping="Wrap" />
+            <HyperlinkButton Grid.Row="3" Grid.Column="0" Content="Apply for OpenWeatherMap API Key" NavigateUri="https://home.openweathermap.org/users/sign_in" />
+            <Label Grid.Row="4" Grid.Column="0" Content="OpenWeatherMap API Key (optional)" />
+            <TextBox Grid.Row="4" Grid.Column="1" PasswordChar="*" Text="{Binding AirPollutionApiKey}" />
             <CheckBox 
-                Grid.Row="2" 
+                Grid.Row="5" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="2"
                 Content="C_heck for updates once a week"

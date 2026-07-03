@@ -37,6 +37,7 @@ public class Constants
     public const string OpenMeteoForecastClientName = "OPEN_METEO_FORECAST_CLIENT";
     public const string OpenMeteoHistoricalClientName = "OPEN_METEO_HISTORICAL_CLIENT";
     public const string OpenMeteoGeoCodingClientName = "OPEN_METEO_GEOCODING_CLIENT";
+    public const string AirPollutionClientName = "AIR_POLLUTION_CLIENT";
     public const string MainWebsiteClientName = "MAIN_WEBSITE_CLIENT";
     
     public const string MainWebsiteUrl = "https://www.EricBT.com";

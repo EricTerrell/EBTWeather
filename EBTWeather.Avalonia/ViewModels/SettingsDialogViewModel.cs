@@ -18,6 +18,8 @@
   along with EBT Weather.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using EBTWeather.Avalonia.Misc;
@@ -36,16 +38,22 @@ public partial class SettingsDialogViewModel : ViewModelBase
     
     public bool CheckForUpdates { get; set; } = Settings.AutomaticallyCheckForUpdates;
 
+    public string? AirPollutionApiKey { get; set; } = Settings.AirPollutionApiKey;
+    
     [RelayCommand]
-    private void Ok(Window window)
+    private async Task Ok(Window window)
     {
         Settings.Units = Units;
         Settings.ScreenMode = ScreenMode;
         Settings.AutomaticallyCheckForUpdates = CheckForUpdates;
-        
+        Settings.AirPollutionApiKey = AirPollutionApiKey;
+            
         DisplayUtils.UpdateScreenMode();
         
         window.Close();
+
+        var app = Application.Current as App;
+        await app!.MainWindowViewModel.UpdateWeatherData(true);
     }
 
     [RelayCommand]
