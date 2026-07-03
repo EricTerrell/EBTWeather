@@ -48,10 +48,7 @@ with normal main window.
 
 # Versions
 
-| Version | Description                                                                                   |
-|---------|-----------------------------------------------------------------------------------------------|
-| 1.01    | Fixed retry logic for HTTP requests. Now log HTTP request duration even if the request fails. |
-| 1.00    | Initial release                                                                               |
+[`Version History`](https://www.ericbt.com/ebt_weather/versionhistory)
 
 # Links
 
