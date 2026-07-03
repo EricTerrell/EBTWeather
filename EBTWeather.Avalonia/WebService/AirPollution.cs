@@ -27,6 +27,7 @@ using EBTWeather.Avalonia.Models;
 using EBTWeather.Avalonia.WeatherData;
 using EBTWeather.Avalonia.web_services.open_weather_map;
 using log4net;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EBTWeather.Avalonia.WebService;
 
@@ -47,9 +48,36 @@ public class AirPollution
             $"/data/2.5/air_pollution?lat={locationData.GeoLocation.Latitude}&lon={locationData.GeoLocation.Longitude}&appid={apiKey}";
     }
 
-    public async Task<AirPollutionInfo?> GetCurrentAirPollutionInfo(LocationData locationData, string apiKey)
+    /***
+     * Need to cache the call to GetAirPollutionInfo. Otherwise, if the open-meteo call is retried, it will redundantly
+     * call GetAirPollutionInfo for each retry.
+     */
+    public async Task<AirPollutionInfo?> GetCachedAirPollutionInfo(LocationData locationData, string apiKey, 
+        IMemoryCache cache)
     {
-        Log.Info($"***** GetCurrentWeather ***** Location: {locationData.Name}");
+        Log.Info($"***** GetCachedAirPollutionInfo ***** Location: {locationData.Name}");
+        
+        var key = GetRequestUri(locationData, apiKey);
+
+        if (cache.TryGetValue(key, out var airPollutionInfo))
+        {
+            Log.Info("GetCachedAirPollutionInfo: using cached data");
+
+            return (airPollutionInfo as AirPollutionInfo)!;            
+        }
+        else
+        {
+            var result = await GetCurrentAirPollutionInfo(locationData, apiKey);
+
+            cache.Set(key, result, Constants.CacheRetentionPeriodCurrent);
+
+            return result;
+        }
+    }
+
+    private async Task<AirPollutionInfo?> GetCurrentAirPollutionInfo(LocationData locationData, string apiKey)
+    {
+        Log.Info($"***** GetCurrentAirPollutionInfo ***** Location: {locationData.Name}");
 
         var requestUri = GetRequestUri(locationData, apiKey);
         Log.Info(requestUri);

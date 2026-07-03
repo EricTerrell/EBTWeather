@@ -156,7 +156,7 @@ public class OpenMeteo
         }
         else
         {
-            var result = await GetCurrentWeather(locationData);
+            var result = await GetCurrentWeather(locationData, cache);
 
             cache.Set(key, result, Constants.CacheRetentionPeriodCurrent);
 
@@ -164,7 +164,7 @@ public class OpenMeteo
         }
     }
 
-    public async Task<WeatherInfo> GetCurrentWeather(LocationData locationData)
+    public async Task<WeatherInfo> GetCurrentWeather(LocationData locationData, IMemoryCache cache)
     {
         Log.Info($"***** GetCurrentWeather ***** Location: {locationData.Name}");
 
@@ -188,8 +188,8 @@ public class OpenMeteo
             {
                 if (!String.IsNullOrEmpty(Settings.AirPollutionApiKey))
                 {
-                    return await new AirPollution(_httpClientFactory).GetCurrentAirPollutionInfo(locationData,
-                        Settings.AirPollutionApiKey.Trim());
+                    return await new AirPollution(_httpClientFactory).GetCachedAirPollutionInfo(locationData,
+                        Settings.AirPollutionApiKey.Trim(), cache);
                 }
                 else
                 {

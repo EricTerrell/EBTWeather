@@ -30,6 +30,11 @@
         <x:String x:Key="MenuHelpAbout">Display information about EBT Weather</x:String>
         
         <!-- Fonts -->
+
+        <!-- 
+        Note: The text after "#" is the font name, which may be completely different from the filename. One can see font
+        names in Windows Control Panel. 
+        -->
         <FontFamily x:Key="EmbeddedMonoFont">avares://EBTWeather/Assets/Fonts#JetBrains Mono Regular</FontFamily>
     </Application.Resources>
 
