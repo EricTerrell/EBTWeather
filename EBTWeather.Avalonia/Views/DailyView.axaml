@@ -35,9 +35,9 @@
     </Design.DataContext>
     <UserControl.Styles>
         <Style Selector="ToolTip">
-            <Setter Property="FontFamily" Value="Lucida Console" />
+            <Setter Property="FontFamily" Value="{StaticResource EmbeddedMonoFont}" />
             <Setter Property="FontSize" Value="14" />
-            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FontWeight" Value="Regular" />
         </Style>
     </UserControl.Styles>
     <UserControl.Resources>
@@ -207,10 +207,11 @@
                             Height="36"
                             Text="AQI"
                             FontSize="24"
-                            FontWeight="Bold">
+                            FontWeight="Bold"
+                            Foreground="#5FA3DF">
                             <ToolTip.Tip>
                                 <TextBlock
-                                    Text="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionComponentsConverter}}" />
+                                    Text="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionComponentsConverter}}"/>
                             </ToolTip.Tip>
                         </TextBlock>
                         <TextBlock

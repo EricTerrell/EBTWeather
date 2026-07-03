@@ -61,6 +61,8 @@ with normal main window.
 
 EBT Weather gets its current weather data, historical data, and location data from [`open-meteo`](https://open-meteo.com/).
 
+[`OpenWeather`](https://openweathermap.org/) provides the optional air quality data.
+
 # Feedback
 
 Please submit your feedback to EBTWeather@EricBT.com.

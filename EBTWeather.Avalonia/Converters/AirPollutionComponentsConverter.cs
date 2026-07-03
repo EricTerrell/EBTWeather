@@ -33,7 +33,7 @@ public class AirPollutionComponentsConverter : IValueConverter
         
         if (value is AirPollutionInfo airPollutionInfo)
         {
-            return $"{header}\n\nPollutant concentration in μg/m3:\n\nPM2_5: {airPollutionInfo.components.pm2_5,7:F2}\nPM10:  {airPollutionInfo.components.pm10,7:F2}\n\nCO:    {airPollutionInfo.components.co,7:F2}\nNO:    {airPollutionInfo.components.no,7:F2}\nNO2:   {airPollutionInfo.components.no2,7:F2}\nO3:    {airPollutionInfo.components.o3,7:F2}\nSO2:   {airPollutionInfo.components.so2,7:F2}\nNH3:   {airPollutionInfo.components.nh3,7:F2}";
+            return $"{header}\n\nAQI: {airPollutionInfo.aqi}\n\nScale: 1 (good) to 5 (very poor)\n\nPollutant concentration in μg/m3:\n\nPM2_5: {airPollutionInfo.components.pm2_5,7:F2}\nPM10:  {airPollutionInfo.components.pm10,7:F2}\n\nCO:    {airPollutionInfo.components.co,7:F2}\nNO:    {airPollutionInfo.components.no,7:F2}\nNO2:   {airPollutionInfo.components.no2,7:F2}\nO3:    {airPollutionInfo.components.o3,7:F2}\nSO2:   {airPollutionInfo.components.so2,7:F2}\nNH3:   {airPollutionInfo.components.nh3,7:F2}";
         }
         
         return $"{header} is not available";

@@ -28,6 +28,9 @@
         <x:String x:Key="MenuHelpSendFeedback">Send feedback about EBT Weather to the developer via e-mail</x:String>
         <x:String x:Key="MenuHelpLicenseTerms">Display EBT Weather's license terms</x:String>
         <x:String x:Key="MenuHelpAbout">Display information about EBT Weather</x:String>
+        
+        <!-- Fonts -->
+        <FontFamily x:Key="EmbeddedMonoFont">avares://EBTWeather/Assets/Fonts#JetBrains Mono Regular</FontFamily>
     </Application.Resources>
 
     <Application.DataTemplates>
@@ -39,7 +42,7 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
 
         <Style Selector="DataGridCell.FixedWidthFont">
-            <Setter Property="FontFamily" Value="Courier New" />
+            <Setter Property="FontFamily" Value="{StaticResource EmbeddedMonoFont}" />
         </Style>
 
         <Style Selector="DataGridCell.AlignedRight">

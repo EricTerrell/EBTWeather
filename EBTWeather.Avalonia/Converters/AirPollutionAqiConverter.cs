@@ -31,7 +31,7 @@ public class AirPollutionAqiConverter : IValueConverter
     {
         if (value is AirPollutionInfo airPollutionInfo)
         {
-            return airPollutionInfo.aqi switch
+            var description = airPollutionInfo.aqi switch
             {
                 1 => "Good",
                 2 => "Fair",
@@ -40,6 +40,8 @@ public class AirPollutionAqiConverter : IValueConverter
                 5 => "Very Poor",
                 _ => string.Empty
             };
+
+            return $"{airPollutionInfo.aqi} - {description}";
         }
         
         return "n/a";
