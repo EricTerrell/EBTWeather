@@ -37,7 +37,7 @@ public class DateTimeUtilsTests
         var localTime = DateTimeUtils.ToUtc(midnight, "America/Denver");
         var localTimeText = localTime.ToString(CultureInfo.InvariantCulture);
         
-        Assert.That(localTimeText, Is.EqualTo("5/12/2026 6:00:00 AM"));
+        Assert.That(localTimeText, Is.EqualTo("05/12/2026 06:00:00"));
     }
 
     [Test]

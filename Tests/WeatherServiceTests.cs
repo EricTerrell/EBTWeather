@@ -23,6 +23,7 @@ using EBTWeather.Avalonia.Models;
 using EBTWeather.Avalonia.UnitValues;
 using EBTWeather.Avalonia.WebService;
 using log4net;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 
 namespace Tests;
@@ -38,10 +39,14 @@ public class WeatherServiceTests
         "Cortez", 
         new GeoLocation(37.3489, -108.5859, new ShortDistance(1972.0)), "America/Denver");
 
+    private IMemoryCache _memoryCache;
+    
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
         var defaultTimeout = TimeSpan.FromMinutes(1);
+
+        _memoryCache = new MemoryCache(new MemoryCacheOptions());
         
         var mockIHttpClientFactory = new Mock<IHttpClientFactory>();
         mockIHttpClientFactory.Setup(factory => factory.CreateClient(Constants.OpenMeteoForecastClientName))
@@ -67,11 +72,17 @@ public class WeatherServiceTests
         
         _weatherService = new OpenMeteo(mockIHttpClientFactory.Object);
     }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+        _memoryCache.Dispose();
+    }
     
     [Test]
     public async Task GetCurrentWeather()
     {
-        var result = await _weatherService.GetCurrentWeather(_locationData);
+        var result = await _weatherService.GetCurrentWeather(_locationData, _memoryCache);
     }
 
     [Test]

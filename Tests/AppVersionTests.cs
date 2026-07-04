@@ -63,7 +63,7 @@ public class AppVersionTests
         Assert.Multiple(() =>
         {
             Assert.That(latestVersion!.Major, Is.EqualTo(1));
-            Assert.That(latestVersion.Minor, Is.EqualTo(0));
+            Assert.That(latestVersion.Minor, Is.EqualTo(2));
         });
     }
 }
