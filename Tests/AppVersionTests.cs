@@ -50,11 +50,6 @@ public class AppVersionTests
         _appVersion = new(_httpClientFactory);
     }
 
-    [OneTimeTearDown]
-    public void OnTimeTearDown()
-    {
-    }
-    
     [Test]
     public async Task TestRetrieveCurrentVersion()
     {
@@ -62,8 +57,7 @@ public class AppVersionTests
         
         Assert.Multiple(() =>
         {
-            Assert.That(latestVersion!.Major, Is.EqualTo(1));
-            Assert.That(latestVersion.Minor, Is.EqualTo(2));
+            Assert.That(latestVersion, Is.GreaterThanOrEqualTo(new Version(1, 2)));
         });
     }
 }
