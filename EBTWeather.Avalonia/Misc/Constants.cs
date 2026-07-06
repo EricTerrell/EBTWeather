@@ -44,6 +44,8 @@ public class Constants
     public const string CodeDownloadUrl = "/versions/EBTWeather";
     public const string DownloadUpdatesUrl = "https://www.EricBT.com/ebt_weather/download";
     
+    public const string RadarUrl = "https://radar.weather.gov";
+    
     public const string SupportEmail = "EBTWeather@EricBT.com";
 
     public const string AppName = "EBT Weather";

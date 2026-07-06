@@ -19,30 +19,30 @@
 */
 
 using System;
-using EBTWeather.Avalonia.UnitValues;
+using System.Globalization;
+using Avalonia.Data.Converters;
 
-namespace EBTWeather.Avalonia.WeatherData;
+namespace EBTWeather.Avalonia.Converters;
 
-public record HourlyWeatherInfo(
-    DateTime DateTime,
-    Temperature Temperature,
-    Temperature ApparentTemperature,
-    Temperature DewPoint,
-    Speed WindSpeed,
-    int WindDirection,
-    Speed WindGusts,
-    int RelativeHumidity,
-    Pressure AirPressure,
-    Precipitation Precipitation,
-    double PrecipitationProbability,
-    int WeatherCode,
-    string WeatherDescription,
-    Visibility Visibility,
-    int CloudCover
-    ) : IComparable<HourlyWeatherInfo>
+public class SpacePaddedStringConverter : IValueConverter
 {
-    public int CompareTo(HourlyWeatherInfo? other)
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        return DateTime.CompareTo(other!.DateTime);
+        if (int.TryParse(parameter!.ToString(), out var totalWidth))
+        {
+            var formatTemplate = $"{{0,{totalWidth}}}"; 
+            return string.Format(formatTemplate, value!);
+        }
+        else
+        {
+            return string.Empty;
+        }
+        
+        return 0;
+    }
+
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        return null;
     }
 }

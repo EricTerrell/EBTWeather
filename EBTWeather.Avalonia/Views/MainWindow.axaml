@@ -47,6 +47,9 @@
         <converters:AngleConverter x:Key="AngleConverter" />
         <converters:DateToBackgroundColorConverter x:Key="DateToBackgroundColorConverter" />
         <converters:ShortTimeConverter x:Key="ShortTimeConverter" />
+        <converters:SpacePaddedIntConverter x:Key="SpacePaddedIntConverter" />
+        <converters:SpacePaddedStringConverter x:Key="SpacePaddedStringConverter" />
+        <converters:UvConverter x:Key="UvConverter" />
     </Window.Resources>
     <Grid
         RowDefinitions="Auto,Auto,*,Auto,Auto">
@@ -186,22 +189,26 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Temp">
+                        <DataGridTemplateColumn 
+                            Header="Temp"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Temperature}" />
+                                        <TextBlock Text="{Binding Temperature, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Feels Like">
+                        <DataGridTemplateColumn 
+                            Header="Feels Like"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding ApparentTemperature}" />
+                                        <TextBlock Text="{Binding ApparentTemperature, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
@@ -209,74 +216,88 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Conditions" Binding="{Binding WeatherDescription}" />
-                        <DataGridTemplateColumn Header="Precip">
+                        <DataGridTemplateColumn 
+                            Header="Precip"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PrecipitationProbability}" />
+                                        <TextBlock Text="{Binding PrecipitationProbability, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock Text=" %" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Amount">
+                        <DataGridTemplateColumn 
+                            Header="Amount"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Precipitation}" />
+                                        <TextBlock Text="{Binding Precipitation, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='6'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Cloud Cover">
+                        <DataGridTemplateColumn 
+                            Header="Cloud Cover"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CloudCover}" />
+                                        <TextBlock Text="{Binding CloudCover, Converter={StaticResource SpacePaddedIntConverter}, ConverterParameter='3'}" />
                                         <TextBlock Text=" %" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Visibility">
+                        <DataGridTemplateColumn 
+                            Header="Visibility"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Visibility}" />
+                                        <TextBlock Text="{Binding Visibility, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.VisibilitySuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Humidity">
+                        <DataGridTemplateColumn 
+                            Header="Humidity"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding RelativeHumidity}" />
+                                        <TextBlock Text="{Binding RelativeHumidity, Converter={StaticResource SpacePaddedIntConverter}, ConverterParameter='3'}" />
                                         <TextBlock Text=" %" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Dew Point">
+                        <DataGridTemplateColumn 
+                            Header="Dew Point"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding DewPoint}" />
+                                        <TextBlock Text="{Binding DewPoint, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Wind">
+                        <DataGridTemplateColumn 
+                            Header="Wind"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding WindSpeed}" />
+                                        <TextBlock Text="{Binding WindSpeed, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                         <TextBlock Text=" " />
@@ -286,22 +307,26 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Gusts">
+                        <DataGridTemplateColumn 
+                            Header="Gusts"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding WindGusts}" />
+                                        <TextBlock Text="{Binding WindGusts, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Pressure">
+                        <DataGridTemplateColumn 
+                            Header="Pressure"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding AirPressure}" />
+                                        <TextBlock Text="{Binding AirPressure, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='5'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.AirPressureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
@@ -325,15 +350,17 @@
                         <DataGridTextColumn
                             Header="Date"
                             Binding="{Binding Date, Converter={StaticResource ShortDateConverter}}" />
-                        <DataGridTemplateColumn Header="Temp">
+                        <DataGridTemplateColumn 
+                            Header="Temp"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding TemperatureMin}" />
+                                        <TextBlock Text="{Binding TemperatureMin, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                         <TextBlock Text=" / " />
-                                        <TextBlock Text="{Binding TemperatureMax}" />
+                                        <TextBlock Text="{Binding TemperatureMax, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
@@ -341,42 +368,88 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Conditions" Binding="{Binding WeatherDescription}" />
-                        <DataGridTemplateColumn Header="Precip">
+                        <DataGridTemplateColumn 
+                            Header="Precip"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PrecipitationProbabilityMax}" />
+                                        <TextBlock Text="{Binding PrecipitationProbabilityMax, Converter={StaticResource SpacePaddedIntConverter}, ConverterParameter='3'}" />
                                         <TextBlock Text=" %" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Amount">
+                        <DataGridTemplateColumn 
+                            Header="Amount"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding PrecipitationSum}" />
+                                        <TextBlock Text="{Binding PrecipitationSum, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='6'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Cloud Cover">
+                        <DataGridTemplateColumn 
+                            Header="Cloud Cover"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding CloudCoverMean}" />
+                                        <TextBlock Text="{Binding CloudCoverMean, Converter={StaticResource SpacePaddedIntConverter}, ConverterParameter='3'}" />
                                         <TextBlock Text=" %" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Max Wind Speed">
+                        <DataGridTemplateColumn 
+                            Header="Visibility"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding WindSpeedMax}" />
+                                        <TextBlock Text="{Binding VisibilityMean, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.VisibilitySuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn 
+                            Header="Humidity"
+                            CellStyleClasses="FixedWidthFont">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding RelativeHumidityMean, Converter={StaticResource SpacePaddedIntConverter}, ConverterParameter='3'}" />
+                                        <TextBlock Text=" %" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn 
+                            Header="Dew Point"
+                            CellStyleClasses="FixedWidthFont">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DewPointMean, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
+                                        <TextBlock
+                                            Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn 
+                            Header="Max Wind Speed"
+                            CellStyleClasses="FixedWidthFont">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding WindSpeedMax, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                         <TextBlock Text=" " />
@@ -386,11 +459,13 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Max Gusts">
+                        <DataGridTemplateColumn 
+                            Header="Max Gusts"
+                            CellStyleClasses="FixedWidthFont">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding WindGustsMax}" />
+                                        <TextBlock Text="{Binding WindGustsMax, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                         <TextBlock
                                             Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                     </StackPanel>
@@ -410,7 +485,10 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Max UV" Binding="{Binding UvIndexMax}" />
+                        <DataGridTextColumn 
+                            Header="Max UV"
+                            CellStyleClasses="FixedWidthFont"
+                            Binding="{Binding UvIndexMax, Converter={StaticResource UvConverter}}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -494,15 +572,17 @@
                             <DataGridTextColumn
                                 Header="Date"
                                 Binding="{Binding Date}" />
-                            <DataGridTemplateColumn Header="Temp">
+                            <DataGridTemplateColumn 
+                                Header="Temp"
+                                CellStyleClasses="FixedWidthFont">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding TemperatureMin}" />
+                                            <TextBlock Text="{Binding TemperatureMin, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                             <TextBlock
                                                 Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                             <TextBlock Text=" / " />
-                                            <TextBlock Text="{Binding TemperatureMax}" />
+                                            <TextBlock Text="{Binding TemperatureMax, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                             <TextBlock
                                                 Text="{Binding Path=DataContext.TemperatureSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                         </StackPanel>
@@ -510,32 +590,38 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Conditions" Binding="{Binding WeatherDescription}" />
-                            <DataGridTemplateColumn Header="Precip">
+                            <DataGridTemplateColumn 
+                                Header="Precip"
+                                CellStyleClasses="FixedWidthFont">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding PrecipitationSum}" />
+                                            <TextBlock Text="{Binding PrecipitationSum, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='6'}" />
                                             <TextBlock
                                                 Text="{Binding Path=DataContext.PrecipitationSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Cloud Cover">
+                            <DataGridTemplateColumn 
+                                Header="Cloud Cover"
+                                CellStyleClasses="FixedWidthFont">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding CloudCoverMean}" />
+                                            <TextBlock Text="{Binding CloudCoverMean, Converter={StaticResource SpacePaddedIntConverter}, ConverterParameter='3'}" />
                                             <TextBlock Text=" %" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Max Wind Speed">
+                            <DataGridTemplateColumn 
+                                Header="Max Wind Speed"
+                                CellStyleClasses="FixedWidthFont">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding WindSpeedMax}" />
+                                            <TextBlock Text="{Binding WindSpeedMax, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                             <TextBlock
                                                 Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                             <TextBlock Text=" " />
@@ -545,11 +631,13 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Max Gusts">
+                            <DataGridTemplateColumn 
+                                Header="Max Gusts"
+                                CellStyleClasses="FixedWidthFont">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding WindGustsMax}" />
+                                            <TextBlock Text="{Binding WindGustsMax, Converter={StaticResource SpacePaddedStringConverter}, ConverterParameter='3'}" />
                                             <TextBlock
                                                 Text="{Binding Path=DataContext.SpeedSuffix, RelativeSource={RelativeSource AncestorType=Window}}" />
                                         </StackPanel>
@@ -574,12 +662,19 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button 
-            Grid.Row="3"
-            Content="_Refresh"
-            Command="{Binding RefreshCommand}"
-            IsEnabled="{Binding RefreshButtonIsEnabled}"
-            Margin="10"/>
+        <StackPanel 
+            Orientation="Horizontal"
+            Grid.Row="3">
+            <Button 
+                Content="_Refresh"
+                Command="{Binding RefreshCommand}"
+                IsEnabled="{Binding RefreshButtonIsEnabled}"
+                Margin="10"/>
+            <Button 
+                Content="R_adar (USA Only)"
+                Command="{Binding RadarCommand}"
+                Margin="10"/>
+        </StackPanel>
         <StackPanel
             Grid.Row="4"
             VerticalAlignment="Bottom"

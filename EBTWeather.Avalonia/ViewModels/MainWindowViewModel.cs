@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -101,6 +102,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RadarCommand))]
     private int? _currentLocationIndex = Settings.CurrentLocationIndex;
 
     [ObservableProperty]
@@ -196,7 +198,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         CurrentLocationIndex = saveIndex < Settings.LocationsData.Locations.Count ? saveIndex : -1;
 
-        if (CurrentLocationIndex < 0 || CurrentLocationIndex >= Settings.LocationsData.Locations.Count)
+        if (!HaveCurrentLocation())
         {
             CurrentAndFutureWeather = null;
             HistoricalWeather = null;
@@ -261,7 +263,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async Task UpdateWeatherData(bool clearCaches = false)
     {
-        if (CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count)
+        if (HaveCurrentLocation())
         {
             StatusMessage = $"Retrieving weather data at {DateTime.Now.ToLongTimeString()}";
 
@@ -303,8 +305,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         HistoricalWeather = null;
         
-        if (HistoricalSelectedMinDate != null && HistoricalSelectedMaxDate != null && 
-            CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count)
+        if (HistoricalSelectedMinDate != null && HistoricalSelectedMaxDate != null && HaveCurrentLocation())
         {
             Log.Info(
                 $"UpdateHistoricalWeatherData: {HistoricalSelectedMinDate.Value} {HistoricalSelectedMaxDate.Value}");
@@ -368,7 +369,33 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         await Task.Run(async () => await UpdateWeatherData());
     }
-    
+
+    [RelayCommand(CanExecute = nameof(HaveCurrentLocation))]
+    private void Radar()
+    {
+        var location = Settings.LocationsData.Locations[CurrentLocationIndex!.Value];
+
+        var jsonString = $"{{\n\"agenda\":{{\n\"id\":null,\n\"center\":[\n{location.GeoLocation.Longitude},\n{location.GeoLocation.Latitude}\n],\n\"location\":null,\n\"zoom\":8.0\n}},\n\"animating\":false,\n\"base\":\"standard\",\n\"artcc\":false,\n\"county\":false,\n\"cwa\":false,\n\"rfc\":false,\n\"state\":true,\n\"menu\":true,\n\"shortFusedOnly\":false,\n\"opacity\":{{\n\"alerts\":0.8,\n\"local\":0.6,\n\"localStations\":0.8,\n\"national\":0.6\n}}\n}}";
+        var jsonBytes = Encoding.UTF8.GetBytes(jsonString);
+        var base64Encoded = Convert.ToBase64String(jsonBytes);
+        
+        var url = $"{Constants.RadarUrl}/?settings=v1_{base64Encoded}";
+
+        Log.Info($"Radar: url: {url}");
+        
+        Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            }
+        );
+    }
+
+    private bool HaveCurrentLocation()
+    {
+        return CurrentLocationIndex >= 0 && CurrentLocationIndex < Settings.LocationsData.Locations.Count;
+    }
+
     /// <summary>
     /// Display help text for menu items in status bar when each menu item is highlighted.
     /// </summary>

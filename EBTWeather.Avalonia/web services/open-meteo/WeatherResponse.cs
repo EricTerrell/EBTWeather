@@ -67,11 +67,11 @@ public class Hourly
     public double[] wind_speed_10m {  get; set; }
     public int[] wind_direction_10m {  get; set; }
     public double[] wind_gusts_10m {  get; set; }
-    public double[] relative_humidity_2m {  get; set; }
+    public int[] relative_humidity_2m {  get; set; }
     public double[] pressure_msl {  get; set; }
     public double[] precipitation_probability { get; set; }
     public double[] precipitation { get; set; }
     public int[] weather_code {  get; set; }
     public double[] visibility {  get; set; }
-    public double[] cloud_cover { get; set; }
+    public int[] cloud_cover { get; set; }
 }

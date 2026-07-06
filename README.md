@@ -63,6 +63,8 @@ EBT Weather gets its current weather data, historical data, and location data fr
 
 [`OpenWeather`](https://openweathermap.org/) provides the optional air quality data.
 
+[`(USA) National Weather Service`](https://www.weather.gov/) provides the radar data.
+
 # Feedback
 
 Please submit your feedback to EBTWeather@EricBT.com.
