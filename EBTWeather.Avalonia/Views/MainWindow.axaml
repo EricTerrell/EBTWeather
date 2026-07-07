@@ -674,6 +674,10 @@
                 Content="R_adar (USA Only)"
                 Command="{Binding RadarCommand}"
                 Margin="10"/>
+            <Button 
+                Content="Light_ning"
+                Command="{Binding LightningCommand}"
+                Margin="10"/>
         </StackPanel>
         <StackPanel
             Grid.Row="4"

@@ -103,6 +103,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
     [NotifyCanExecuteChangedFor(nameof(RadarCommand))]
+    [NotifyCanExecuteChangedFor(nameof(LightningCommand))]
     private int? _currentLocationIndex = Settings.CurrentLocationIndex;
 
     [ObservableProperty]
@@ -382,6 +383,23 @@ public partial class MainWindowViewModel : ViewModelBase
         var url = $"{Constants.RadarUrl}/?settings=v1_{base64Encoded}";
 
         Log.Info($"Radar: url: {url}");
+        
+        Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            }
+        );
+    }
+
+    [RelayCommand(CanExecute = nameof(HaveCurrentLocation))]
+    private void Lightning()
+    {
+        var location = Settings.LocationsData.Locations[CurrentLocationIndex!.Value];
+        var zoom = 11;
+        var url = $"{Constants.LightningUrl}/?lang=en#m=oss;t=4;s=201;o=0;b=;ts=0;z={zoom};y={location.GeoLocation.Latitude};x={location.GeoLocation.Longitude};d=2;dl=2;dc=0;src=6;";
+
+        Log.Info($"Lightning: url: {url}");
         
         Process.Start(new ProcessStartInfo
             {
