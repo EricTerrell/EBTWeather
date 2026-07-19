@@ -371,6 +371,17 @@ public partial class MainWindowViewModel : ViewModelBase
         await Task.Run(async () => await UpdateWeatherData());
     }
 
+    [RelayCommand]
+    private void DataStatus()
+    {
+        Process.Start(new ProcessStartInfo
+            {
+                FileName = Constants.DataProviderStatusUri.AbsoluteUri,
+                UseShellExecute = true
+            }
+        );
+    }
+
     [RelayCommand(CanExecute = nameof(HaveCurrentLocation))]
     private void Radar()
     {

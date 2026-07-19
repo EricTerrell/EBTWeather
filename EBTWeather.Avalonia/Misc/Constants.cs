@@ -46,6 +46,7 @@ public class Constants
     
     public const string RadarUrl = "https://radar.weather.gov";
     public const string LightningUrl = "https://www.lightningmaps.org";
+    public static readonly Uri DataProviderStatusUri = new("https://status.open-meteo.com");
     
     public const string SupportEmail = "EBTWeather@EricBT.com";
 

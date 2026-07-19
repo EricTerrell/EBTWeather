@@ -669,6 +669,13 @@
                 Content="_Refresh"
                 Command="{Binding RefreshCommand}"
                 IsEnabled="{Binding RefreshButtonIsEnabled}"
+                IsVisible="{Binding RefreshButtonIsEnabled}"
+                Margin="10"/>
+            <Button 
+                Content="_Weather Data Status"
+                Command="{Binding DataStatusCommand}"
+                IsEnabled="{Binding RefreshButtonIsEnabled}"
+                IsVisible="{Binding RefreshButtonIsEnabled}"
                 Margin="10"/>
             <Button 
                 Content="R_adar (USA Only)"
