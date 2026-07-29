@@ -229,6 +229,10 @@
                                     Height="30"
                                     Fill="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionColorConverter}}">
                                 </Ellipse>
+                            <ToolTip.Tip>
+                                <TextBlock
+                                    Text="{Binding AirPollutionInfo, Converter={StaticResource AirPollutionComponentsConverter}}"/>
+                            </ToolTip.Tip>
                         </Canvas>
                     </StackPanel>
                     <StackPanel 
