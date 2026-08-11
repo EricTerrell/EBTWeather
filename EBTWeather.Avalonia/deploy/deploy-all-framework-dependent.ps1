@@ -30,5 +30,5 @@ cd "~\Documents\software development\Avalonia UI\EBTWeather\EBTWeather.Avalonia\
 Write-Output ""
 Write-Output "***************************************"
 Write-Output "Now run Inno Setup (Build/Compile)"
-Write-Output "Then run build_windows_setup_zip.ps1"
+Write-Output "Then run deploy-windows-setup.ps1"
 Write-Output "***************************************"
